@@ -2508,6 +2508,54 @@ int main(){
 
 >![alt text](image-59.png)
 
+## Problem Statement #0.6 incomplete
+
+### Multi-Dimensional array manipulation using pointers
+
+```C++
+//Solution
+#include<iostream>
+using namespace std;
+int main(){
+	int multi[5][10];
+	
+	for(int row=0; row < 5; row++){
+		for(int col=0; col < 10; col++){
+			multi[row][col] = row * col;
+		}
+	}
+	
+	int *ptr = *multi;
+	
+	for(int row=0; row<5; row++){
+		for(int col=0; col<10; col++){
+			cout << *ptr++ << " ";
+		}
+		cout << endl;
+	}
+
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #0.7
+
+### command-line arguments in main
+
+```C++
+//Solution
+#include<iostream>
+using namespace std;
+int main(int argc, char **argv){
+	cout << "argc = " << argc << "\nargv = " << *argv;
+
+	return 0;
+}
+```
+
+>
 
 
 
