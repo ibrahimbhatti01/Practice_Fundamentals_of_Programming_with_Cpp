@@ -1991,7 +1991,7 @@ int main(){
 >![alt text](image-47.png)
 
 
-## Problem Statement #0.8 incomplete
+## Problem Statement #0.8 
 
 ### claculating how many employees get greater gross salary but less net salary in comparison with others having less gross but higher net salary, due to income tax slab variations
 
@@ -2461,6 +2461,52 @@ int main(){
 ```
 
 >![alt text](image-58.png)
+
+## Problem Statement #0.5
+
+### Copy char string1 into 2 using pointers arithmetic
+
+```C++
+//Solution
+#include<iostream>
+using namespace std;
+void myStringCopy(char *destination, const char *source){
+	while(*source != '\0'){
+		*destination++ = *source++;
+	}
+	*destination = '\0';
+	
+//	why it doesn't return anything,
+//	it is becuse source and destinations are already passed as refernce addresses.
+//  So, the value at the actual address will be changed
+}
+int main(){
+//	There's a termination character '\0' element at end of every array.
+	char string1[10] = "Ibrahim";
+	char string2[10];
+	
+//	Copy string1 characters in string2 using pointers.
+
+	char *ptrA, *ptrB;
+	ptrA = string1;
+	ptrB = string2;
+
+//	This function will copy source strings into destination
+	myStringCopy(string2, string1);
+	
+	int i=0;
+	cout << "string2 = ";0
+	while(string2[i] != '\0'){
+		cout << string2[i] << "";
+		i++;
+	}
+	
+
+	return 0;
+}
+```
+
+>![alt text](image-59.png)
 
 
 
