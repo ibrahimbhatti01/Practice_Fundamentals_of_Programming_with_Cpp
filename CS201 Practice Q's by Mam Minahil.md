@@ -1993,7 +1993,7 @@ int main(){
 
 ## Problem Statement #0.8 
 
-### claculating how many employees get greater gross salary but less net salary in comparison with others having less gross but higher net salary, due to income tax slab variations
+### Real World Problem #01 - Calculating how many employees get greater gross salary but less net salary in comparison with others having less gross but higher net salary, due to income tax slab variations
 
 ```C++
 //Solution
@@ -2556,6 +2556,103 @@ int main(int argc, char **argv){
 ```
 
 >
+
+## Problem Statement #0.8
+
+### Real World Problem 02 - Shuffling and Displaying the Deck
+
+```C++
+//Solution
+#include<iostream>
+#include<cstdlib>
+#include<ctime>
+#include<iomanip>
+using namespace std;
+
+//  Defining constants.
+	const int TOTAL_SUITS = 4;
+	const int TOTAL_FACES = 13;
+	const int TOTAL_CARDS = 52;
+
+void shuffle(int wDeck[][TOTAL_FACES], int keyDeck[][2]){
+//	There're total 52 cards, 13 cards per Suit.
+	int cardRow, cardCol, card;
+	
+	for(card=0; card<TOTAL_CARDS; card++){
+		do{
+//          We'll iterate to random locations, and if that location isn't already assigned
+//			a card number, We'll assign it a card number.
+			cardRow = rand()% TOTAL_SUITS; //Random Suits
+			cardCol = rand()% TOTAL_FACES; //Random Faces
+		}while(wDeck[cardRow][cardCol] != 0);
+
+		wDeck[cardRow][cardCol] = card+1;
+		
+//		Store shuffled suit and faces
+		keyDeck[card][0] = cardRow;
+		keyDeck[card][1] = cardCol;
+	}
+}
+
+//  Function to deal and display the shuffle deck.
+void displayDeck(int wDeck[][TOTAL_FACES], const char *Suit[], const char *Face[], int keyDeck[][2]){
+//	int row, col, card;
+//	We'll read which card number is assigned to which location,
+//  By accessing row(Suits) and col(Faces) numbers, We'll print in front of card numbers.
+//	for(card=1; card<=52; card++){
+//		for(row=0; row<4; row++){
+//			for(col=0; col<13; col++){
+//				if(wDeck[row][col] == card){
+//					cout << "Card " << setw(2) << card << ". " << setw(10) << *(Suit + row) << setw(10) << *(Face + col) << "\n" << endl;
+//					break;
+//				}
+//			}
+//		}
+//	}
+
+	cout << "\t" << setw(12) << "| Suits |" << setw(15) << "| Faces |\n\n" <<endl;
+	for(int row=0; row<TOTAL_CARDS; row++){
+				cout << "Card " << setw(2) << row+1 << ". "
+				<< setw(10) << *(Suit + keyDeck[row][0])
+				<< setw(10) << *(Face + keyDeck[row][1])
+				<< "\n" << endl;
+	}
+}
+int main(){
+//	Why we're using array of pointiers??
+//  It is because, If we've to store different strings in an array,
+//		We'll have to use multidimensional array, with fixed memory sizes.
+//      Now, as we've variable lengths of strings, remaining spaces will be left unused.
+//      So, to save space we use array of pointers to characters, It can have variable space
+//		For each string. depending upon the length of string.
+//	Here, 'Suit' is an array of 4 constant pointers to char.
+//  It is constant because we're not gonna change their elements afterward.
+	const char *Suit[4] = {"Spades", "Hearts", "Diamonds", "Clubs"};
+
+//  Array of 13 constant pointers to char
+	const char *Face[TOTAL_FACES] = {"Ace", "Duce", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"};
+	
+//	Deck is declared as 2-D array having 4 Suits as rows and 13 Faces as columns.
+//	Assuming no card initialy, and it'll be used as to iterate and give a random suit and face.
+	int deck[TOTAL_SUITS][TOTAL_FACES] = {0};
+	int keyDeck[TOTAL_CARDS][2] = {0};
+	
+//	seeding time to random function, for more fair random value
+	srand(time(NULL));
+
+//  Shuffling cards in the deck
+	shuffle(deck, keyDeck);
+	
+//	Dealing and displaying the cards
+	displayDeck(deck, Suit, Face, keyDeck);
+
+
+	return 0;
+}
+```
+
+>![alt text](image-60.png)
+
 
 
 
