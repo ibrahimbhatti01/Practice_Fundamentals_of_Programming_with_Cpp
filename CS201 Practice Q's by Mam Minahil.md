@@ -2653,6 +2653,114 @@ int main(){
 
 >![alt text](image-60.png)
 
+# !! String Manipulation Functions
+
+## Problem Statement #0.1
+
+### Get string input and print analysing report
+
+```C++
+//Solution
+#include <iostream>
+#include <cctype>  // For character classification functions
+using namespace std;
+
+int main() {
+    char c;
+
+    int digits = 0, alphabets = 0, punctuations = 0, alphanumerics = 0;
+    int lowerCases = 0, upperCases = 0, spaces = 0, printablees = 0, graphs = 0;
+
+    cout << "Enter a string: \n";
+
+    // Read characters until newline is encountered
+    while ((c = getchar()) != '\n') {
+        // Check and count character types
+        if (isalpha(c)) {
+            alphabets++;
+        }
+        if (isdigit(c)) {
+            digits++;
+        }
+        if (ispunct(c)) {
+            punctuations++;
+        }
+        if (isalnum(c)) {
+            alphanumerics++;
+        }
+        if (islower(c)) {
+            lowerCases++;
+        }
+        if (isupper(c)) {
+            upperCases++;
+        }
+        if (isspace(c)) {
+            spaces++;
+        }
+        if (isprint(c)) {
+            printablees++;
+        }
+        if (isgraph(c)) {
+            graphs++;
+        }
+    }
+
+    // Display the results
+    cout << "\nThere are:\n"
+         << alphabets << " alphabets.\n"
+         << digits << " digits.\n"
+         << punctuations << " punctuations.\n"
+         << alphanumerics << " alphanumerics.\n"
+         << lowerCases << " lowercase letters.\n"
+         << upperCases << " uppercase letters.\n"
+         << spaces << " spaces.\n"
+         << printablees << " printable characters.\n"
+         << graphs << " graphical characters.\n";
+
+    return 0;
+}
+```
+
+>![alt text](image-61.png)
+
+## Problem Statement #0.2
+
+### Convert characters to integer.
+
+```C++
+//Solution
+#include <iostream>
+#include <cstdlib>  // For atoi()
+using namespace std;
+
+int main() {
+    char ageStr[10];  // Buffer to store the input as a string
+    int age = 0;
+
+    // Loop until the user enters a valid integer
+    do {
+        cout << "\nHow old are you?\n";
+        cin.getline(ageStr, 10);  // Read the input into the character array
+
+        // Convert the string to an integer
+        age = atoi(ageStr);
+
+        // Check if the input is invalid
+        if (age == 0 && ageStr[0] != '0') {
+            cout << "Invalid input! Age must be an integer.\n";
+        }
+    } while (age == 0 && ageStr[0] != '0');  // Repeat if input is invalid
+
+    // Display the age
+    cout << "\nYou're " << age << " years old.\n";
+
+    return 0;
+}
+```
+
+>![alt text](image-62.png)
+
+
 
 
 
