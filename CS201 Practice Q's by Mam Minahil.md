@@ -2725,7 +2725,7 @@ int main() {
 
 ## Problem Statement #0.2
 
-### Convert characters to integer.
+### C onvert characters to integer.
 
 ```C++
 //Solution
@@ -2759,6 +2759,224 @@ int main() {
 ```
 
 >![alt text](image-62.png)
+
+## Problem Statement #0.3
+
+### Take string input print in reverse order using pointers
+
+```C++
+//Solution
+#include <iostream>
+using namespace std;
+
+int main(){
+	char *strPtr = new char[100];
+
+	char c;
+	int length=0;
+	cout << "Please enter your name: ";
+	while((c = getchar()) != '\n' && length < 99){
+		strPtr[length] = c;
+		length++;
+	}
+	
+	strPtr[length] = '\0';
+	
+	cout << "\nYour name is: ";
+	for(int i=length-1; i >= 0; i--){
+		cout << strPtr[i];
+	}
+
+	delete[] strPtr;
+
+    return 0;
+}
+```
+
+>
+
+---
+---
+
+# !! File Handling
+
+## Problem Statement #0.1
+
+### Opening Reading Printing and closing the file.
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main(){
+//	Declaring a myFyli Input file stream object
+	ifstream myFile;
+	
+//	Opening the file
+	myFile.open("welcome.txt");
+	
+//	Checking if the file has opened successfully
+	if(!myFile){
+		cout << "Your file couldn't be opened." << endl;
+	}else{
+		
+//		  Declaring a string line, to print lines of the file
+		  string line;
+		  
+//		  Read/print the file until lines havven't ended.
+		  while(getline(myFile, line)){
+		  	cout << line << endl;
+		  }
+	}
+	
+//	Closing the file
+	myFile.close();
+	
+
+    return 0;
+}
+```
+
+>![alt text](image-63.png)
+
+## Problem Statement #0.1.1
+
+### Method 2 of reading file
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main(){
+//	Declaring a myFyli Input file stream object
+	ifstream myFile;
+	
+//	Opening the file
+	myFile.open("welcome.txt");
+	
+//	Checking if the file has opened successfully
+	if(!myFile){
+		cout << "Your file couldn't be opened." << endl;
+	}else{
+		  
+		  
+////	if we check ond of line first and then print characters,it'll print extra characters.
+//		  char ch;
+////	Read/print the file until lines havven't ended.
+//		  while(!myFile.eof()){
+//		  	myFile.get(ch);
+//		  	cout << ch;
+//		  }
+
+
+//		  The solution is, just directly check for end line character '\0', and stop.
+		  char ch;
+		  while(myFile.get(ch)){
+		  	cout << ch;
+		  }
+
+	}
+	
+//	Closing the file
+	myFile.close();
+	
+    return 0;
+}
+```
+
+>![alt text](image-63.png)
+
+## Problem Statement #0.2
+
+### Processing payroll using file - Old methods
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream> //For file streams
+#include <cstring> //For string search functions
+#include <cstdlib> //For string conversion functions
+using namespace std;
+int main(){
+	ifstream myFile;
+	myFile.open("payRoll.txt");
+	
+	if(!myFile){
+		cout << "Your file couldn't be opened." << endl;
+	}else{
+		char arr[30], *namePtr, *salaryPtr;
+		double fSalary = 0.0;
+		
+		cout << "\nSalaries for these particular employees after Eid Bonus is:\n";
+//		getline function takes char type dilemiter, that's why used single quotation mark '\n'
+		while(myFile.getline(arr, 30)){ //Default dilemiter is '\n'
+			namePtr = strtok(arr, " "); //Dilemiter is a constant character here, used double quote " "
+			salaryPtr = strtok(NULL, "\n"); // Dilemiter is const char, used 2ble quote " ";
+			fSalary = atof(salaryPtr) + 1000;
+			
+			cout << namePtr << " = " << fSalary << endl;
+		}
+	}
+	
+//	Closing the file
+	myFile.close();
+	
+
+	return 0;
+}
+```
+
+>![alt text](image-64.png)
+
+## Problem Statement #0.3
+
+### Processing payroll using file - modern c++ method
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+#include <sstream>
+using namespace std;
+int main(){
+	ifstream myFile;
+	myFile.open("payRoll.txt");
+	
+	if(!myFile){
+		cout << "Your file couldn't be opened.";
+	}else{
+		string line, name;
+		double salary = 0.0;
+		
+		cout << "\nSalaries of these particular employees after Eid Bonus: \n";
+		while(getline(myFile, line)){
+			
+//			stringstream will parse the string line.
+//			in this method original string will be remained unmodified.
+			stringstream ss(line);
+			
+//			writing out name into name and salary into salary
+			ss >> name;
+			ss >> salary;
+			
+			salary += 1000;
+			
+			cout << name << " = " << salary << endl;
+		}
+	}
+	
+	myFile.colse();
+	
+	
+	return 0;
+}
+```
+
+>![alt text](image-64.png)
 
 
 
