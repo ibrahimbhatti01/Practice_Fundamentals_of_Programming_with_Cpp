@@ -3119,7 +3119,7 @@ int main(){
 #include <fstream>
 using namespace std;
 int main(){
-//	For absolute path we may need larger space.
+//	For absolute path we may need larger space, so defining 100.
 	char *pathIn1 = new char[100];
 	char *pathIn2 = new char[100];
 	char *pathOut = new char[100];
@@ -3134,21 +3134,22 @@ int main(){
 	cout << "\nPlease enter the name or path of Output File: ";
 	cin >> pathOut;
 	
-	
+	// We're using specific file streams, instead of 
+	// one in all fstream.
 	ifstream input1(pathIn1);
 	ofstream outFile(pathOut); //Always overwrite
 
+	// if file declines to open, so we're tracking from start,
+	// eithers files get merged successfully or not.
 	bool mergeSuccess = true;
 
 	if(!input1){
 		cout << "\nError: Input1 file couldn't be opened." << endl;
 		mergeSuccess = false;
-		return 1;
 	}
 	if(!outFile){
 		cout << "\nError: Output file couldn't be opened." << endl;
 		mergeSuccess = false;
-		return 1;
 	}
 
 	string line;
@@ -3161,7 +3162,6 @@ int main(){
 	if(!input2){
 		cout << "\nError: Input2 file couldn't be opened." << endl;
 		mergeSuccess = false;
-		return 1;
 	}
 
 	while(getline(input2, line)){
@@ -3171,8 +3171,12 @@ int main(){
 	input2.close();
 	outFile.close();
 	
-	if(mergeSuccess)
+	if(mergeSuccess){
 		cout << "\nFiles merged Successfully." <<endl;
+	}else{
+		cout << "\nDue to certain errors above, Files couldn't merged." <<endl;
+	}
+		
 	
 	delete[] pathIn1;
 	delete[] pathIn2;
@@ -3184,6 +3188,86 @@ int main(){
 
 >![alt text](image-69.png)
 
+
+## Problem Statement #02 - continue...
+
+### User Registration (Signup)
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
+void getUsername(ifstream &users, char *username){
+	users.seekg(0L, ios::beg);
+	
+	bool space;
+
+	do{
+		space = false;
+		
+		cout << "Please enter a username: ";
+		cin >> username;
+		
+		int i = 0;
+		while(username[i] != '\0'){
+			if(isspace(username[i])){
+				space = true;
+				cout << "Username cannot contain a space." <<endl;
+			}
+			i++;
+		}
+	}while(strlen(username) == 0 || space);
+}
+bool isUnique(ifstream &users, char *username){
+	bool unique = true;
+	
+	string line, id, existingUsername;
+	users.seekg(0L, ios::beg);
+
+	while(getline(users, line)){
+		stringstream ss(line);
+
+		ss >> id;
+		ss >> existingUsername;
+
+		if(username == existingUsername){
+			unique = false;
+		}
+	}
+
+	if(!unique)
+		cout << "\nThis username is already Taken" << endl;
+
+	return unique;
+}
+int main(){
+	cout << "\nWelcome to Registeration!\n" <<endl;
+	
+	ifstream users("users.txt");
+	
+	if(!users){
+		cout << "\nWe could not access Registration database this time.\n";
+		return 1;
+	}
+	
+	char *id = new char[10];
+	char *username = new char[30];
+	char *password = new char[30];
+	
+	do{
+	   getUsername(users, username);
+	}while(!isUnique(users, username));
+	
+	
+	return 0;
+}
+```
+
+>
 
 
 
