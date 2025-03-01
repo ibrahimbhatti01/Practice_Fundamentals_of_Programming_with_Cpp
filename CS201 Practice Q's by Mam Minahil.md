@@ -4,7 +4,6 @@
 
 ## Problem Statement #01
 
-### Sample Output:
 >![alt text](image.png)
 
 ```C++
@@ -44,8 +43,6 @@ main()
 
 ### Area and Perimeter Calculation of Geometrical Shapes:
 
-### Sample Output:
-> Example console output with user inputs and interest calculations.
 ![alt text](image-2.png)
 
 ```C++
@@ -97,8 +94,6 @@ main()
 
 ### Temperature Conversion Program:
 
-### Console Screenshot (Reference):
-> Example console output with user inputs and interest calculations.
 ![alt text](image-5.png)
 
 ```C++
@@ -160,8 +155,6 @@ main()
 
 ### Simple and Compound Interest Calculator
 
-### Console Screenshot (Reference):
-> Example console output with user inputs and interest calculations.
 ![alt text](image-6.png)
 
 ```C++
@@ -212,8 +205,6 @@ int main()
 ## Problem Statement #05
 
 ### Parallel and series resistances calculator
-
-#### Console Screenshot (Reference):
 
 >![alt text](image-8.png)
 
@@ -2323,7 +2314,7 @@ int main(){
 
 >![alt text](image-53.png)
 
-## Problem Statement #05 -Need to update
+## Problem Statement #05 - incomplete
 
 ### Dynamically allocate memory for integer, display using pointer and free the memory
 
@@ -2508,7 +2499,7 @@ int main(){
 
 >![alt text](image-59.png)
 
-## Problem Statement #0.6 incomplete
+## Problem Statement #0.6 - incomplete
 
 ### Multi-Dimensional array manipulation using pointers
 
@@ -2914,6 +2905,7 @@ int main(){
 		cout << "\nSalaries for these particular employees after Eid Bonus is:\n";
 //		getline function takes char type dilemiter, that's why used single quotation mark '\n'
 		while(myFile.getline(arr, 30)){ //Default dilemiter is '\n'
+//		Alternative to strtok is stringstream.
 			namePtr = strtok(arr, " "); //Dilemiter is a constant character here, used double quote " "
 			salaryPtr = strtok(NULL, "\n"); // Dilemiter is const char, used 2ble quote " ";
 			fSalary = atof(salaryPtr) + 1000;
@@ -2956,10 +2948,11 @@ int main(){
 		while(getline(myFile, line)){
 			
 //			stringstream will parse the string line.
-//			in this method original string will be remained unmodified.
+//			in this method original string will be remained unmodified. as strtok() modifies the original string.
+//			ss is a stringstream object.
 			stringstream ss(line);
 			
-//			writing out name into name and salary into salary
+//			writing out name into name and salary into salary.
 			ss >> name;
 			ss >> salary;
 			
@@ -2969,7 +2962,7 @@ int main(){
 		}
 	}
 	
-	myFile.colse();
+	myFile.close();
 	
 	
 	return 0;
@@ -2977,6 +2970,219 @@ int main(){
 ```
 
 >![alt text](image-64.png)
+
+## Problem Statement #0.4
+
+### Calculate words in a string
+
+```C++
+//Solution
+#include <iostream>
+#include <cctype>
+using namespace std;
+int main(){
+	char *arr = new char[500];
+
+//	.getline do not read '\n', it just add termination char '\0' at end
+	cout << "How's it going today?\n";
+	cin.getline(arr, 499);
+
+
+	bool inword = false;
+	int words=0, i=0;
+	
+//	it'll iterate through each character,
+//	if it's a space, inword=false, and increment.
+//	it'll remain true until you remain in a word.
+	while(arr[i] != '\0' && i<499){
+		if(isspace(arr[i])){
+			inword = false;
+		}else if(!inword){
+			words++;
+			inword = true;
+		}
+		i++;
+	}
+	
+	cout << "There're " << words << " words in your string.";
+	
+	delete[] arr;
+	
+	return 0;
+}
+```
+
+>![alt text](image-65.png)
+
+## Problem Statement #0.5
+
+### Combination of seekg() and tellg(), to check file size
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main(){
+	ifstream myFile;
+	myFile.open("welcome.txt");
+	
+	if(!myFile){
+	cout << "Your file couldn't be opened." << endl;
+	}else{
+
+//		Declaring a string line, to print lines of the file
+		string line;
+
+	 	int length;
+
+	//	Seekg will move the pointer at end, and move nowhere.
+		myFile.seekg(0L, ios::end);
+
+	//	tellg will tell the curent position.
+	//	And hence, we've the size of file.
+		length = myFile.tellg();
+
+//		Move the pointer to begining to read file again.
+		myFile.seekg(0L, ios::beg);
+
+//		Read/print the file until lines havven't ended.
+		while(getline(myFile, line)){
+			cout << line << endl;
+ 		}
+ 		
+		cout << "\nLength of this file = " << length <<endl;
+
+	}
+	
+	
+	//	Closing the file
+	myFile.close();
+	
+	return 0;
+}
+```
+
+>![alt text](image-66.png)
+
+## Problem Statement #0.7 - incomplete
+
+### file text updation 
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main(){
+	fstream myFile("welcome.txt", ios::in | ios::out);
+	
+	if(!myFile){
+		cout << "Your file couldn't be opened.";
+	}else{
+		myFile.seekg(6L, ios::beg);
+		
+		char str[20] = {"Ibrahim Bhatti"};
+		myFile.write(str, 15);
+		
+		
+		myFile.seekg(0L, ios::beg);
+		cout << "\nData print by getline:" <<endl;
+		string line;
+		while(getline(myFile, line)){
+			cout << line << endl;
+		}
+		
+		myFile.seekg(0L, ios::beg);
+		myFile.read(myFile, 100);
+
+		
+		cout << "Current read position = " << myFile.tellg() << endl;
+		cout << "Current write position = " << myFile.tellp()<< endl;
+		
+		
+	}
+
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #01
+
+### Merge two input files in an output file
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main(){
+//	For absolute path we may need larger space.
+	char *pathIn1 = new char[100];
+	char *pathIn2 = new char[100];
+	char *pathOut = new char[100];
+	
+	cout << "\nNote: name or path must include extension, i.e: fileName.txt" << endl;
+	cout << "\nPlease enter the name or path of Input File 1: ";
+	cin >> pathIn1;
+	
+	cout << "\nPlease enter the name or path of Input File 2: ";
+	cin >> pathIn2;
+	
+	cout << "\nPlease enter the name or path of Output File: ";
+	cin >> pathOut;
+	
+	
+	ifstream input1(pathIn1);
+	ofstream outFile(pathOut); //Always overwrite
+
+	bool mergeSuccess = true;
+
+	if(!input1){
+		cout << "\nError: Input1 file couldn't be opened." << endl;
+		mergeSuccess = false;
+		return 1;
+	}
+	if(!outFile){
+		cout << "\nError: Output file couldn't be opened." << endl;
+		mergeSuccess = false;
+		return 1;
+	}
+
+	string line;
+	while(getline(input1, line)){
+		outFile << line << endl;
+	}
+	input1.close();
+
+	ifstream input2(pathIn2);
+	if(!input2){
+		cout << "\nError: Input2 file couldn't be opened." << endl;
+		mergeSuccess = false;
+		return 1;
+	}
+
+	while(getline(input2, line)){
+		outFile << line << endl;
+	}
+
+	input2.close();
+	outFile.close();
+	
+	if(mergeSuccess)
+		cout << "\nFiles merged Successfully." <<endl;
+	
+	delete[] pathIn1;
+	delete[] pathIn2;
+	delete[] pathOut;
+
+	return 0;
+}
+```
+
+>![alt text](image-69.png)
 
 
 
@@ -2992,3 +3198,14 @@ int main(){
 ```
 
 >
+
+# !! Cheats
+
+## #0 Pointers | Arrays
+
+>![alt text](image-68.png)
+
+## #0 String Search Functions `<cstring>`
+
+>![alt text](image-67.png)
+
