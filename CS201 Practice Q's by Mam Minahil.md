@@ -3189,79 +3189,195 @@ int main(){
 >![alt text](image-69.png)
 
 
-## Problem Statement #02 - continue...
+## Problem Statement #02
 
 ### User Registration (Signup)
 
 ```C++
 //Solution
+/*
+This program implements a simple user registration system using file handling.
+- Users are stored in "users.txt"
+- Each user record has fixed-width fields: ID(5), Username(30), Password(20)
+- Username must be unique (checked during registration)
+- File structure supports future updates by maintaining fixed field widths
+- Handles missing file case by creating "users.txt" if it doesn't exist.
+*/
+
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cstring>
+#include <cstring> //For strcmp()
 #include <cstdlib>
+#include <iomanip>
 using namespace std;
-void getUsername(ifstream &users, char *username){
-	users.seekg(0L, ios::beg);
-	
-	bool space;
 
+//Defining constants, used throughout the program.
+const int ID_SIZE = 5;
+const int USERNAME_SIZE = 30;
+const int PASSWORD_SIZE = 20;
+
+// Count total existing users (1 line per user) to generate next ID.
+int countUsers(ifstream &inFile){
+//	Start counting lines from the begining of the file.
+	inFile.seekg(0, ios::beg);
+	
+	string line;
+	int count = 0;
+//	Count every line in the file.
+	while(getline(inFile, line)){
+		count++;
+	}
+	
+//	Clear any flags, this file have, just like eof() or any others.
+	inFile.clear();
+	
+	return count;
+}
+
+//Take username and check it's validity.
+void getUsername(char *username){
+
+//	re-prompt until username is empty or contain any space.
+	int length = 0;
+	bool space;
 	do{
+//     	In every input, assume there's no space.
 		space = false;
 		
-		cout << "Please enter a username: ";
-		cin >> username;
+		cout << "Please enter a username (max "<<USERNAME_SIZE-1<<" characters): ";
+		cin.getline(username, USERNAME_SIZE);
+		
+		length = strlen(username);
 		
 		int i = 0;
 		while(username[i] != '\0'){
 			if(isspace(username[i])){
 				space = true;
-				cout << "Username cannot contain a space." <<endl;
 			}
-			i++;
+   			i++;
 		}
-	}while(strlen(username) == 0 || space);
+		if(space){
+			cout << "\n[Error] Username cannot contain a space." <<endl;
+		}
+		if(length < 1){
+			cout << "\n[Error] Username cannot be empty." << endl;
+		}
+	}while(space || length < 1);
 }
-bool isUnique(ifstream &users, char *username){
-	bool unique = true;
-	
-	string line, id, existingUsername;
-	users.seekg(0L, ios::beg);
 
-	while(getline(users, line)){
+//Return true, if the input is unique, else false.
+bool isUnique(ifstream &inFile, char *username){
+//	Start comparing from the begining of file.
+	inFile.seekg(0L, ios::beg);
+
+	bool unique = true;
+	string line, id, existingUsername;
+//	Tokenize each line, and compare input username with existing username, on each line.
+	while(getline(inFile, line)){
 		stringstream ss(line);
 
 		ss >> id;
 		ss >> existingUsername;
 
-		if(username == existingUsername){
+//		strcmp() return 0 if strings are same, else 1 or -1.
+// Convert existingUsername (string type) to char array
+// for strcmp() comparison with input username.
+		if(strcmp(username, existingUsername.c_str()) == 0){
 			unique = false;
 		}
 	}
 
 	if(!unique)
-		cout << "\nThis username is already Taken" << endl;
+		cout << "\n[Error] This username is already Taken." << endl;
 
+//	At end reset any flag, if the file got.
+	inFile.clear();
+
+//	return true, if unique, else false.
 	return unique;
 }
+
+//Takes password and validate it.
+void getPassword(char *password){
+
+//	Re-prompt until password is empty or contain a space.
+	int length = 0;
+	bool space;
+	do{
+		space = false;
+
+		cout << "Please enter a password (max "<< PASSWORD_SIZE-1 <<" characters): ";
+		cin.getline(password, PASSWORD_SIZE);
+
+		length = strlen(password);
+		int i = 0;
+		while(password[i] != '\0'){
+			if(isspace(password[i])){
+				space = true;
+			}
+			i++;
+		}
+		if(space){
+			cout << "\n[Error] Password cannot contain a space." <<endl;
+		}
+		if(length < 1){
+			cout << "\n[Error] Password cannot be empty." << endl;
+		}
+	}while(space || length < 1);
+}
+
+//Append user data into the file, with fixed-width columns, return true, if written successfully.
+bool writeToFile(ofstream &outFile, ifstream &inFile, char *username, char *password){
+	string temp = to_string(countUsers(inFile)+1);
+// Use setw() to make fix-width columns for ID, username & password _for future edits don't corrupt structure.
+	outFile << setw(ID_SIZE) << temp.c_str()
+			<< setw(USERNAME_SIZE) << username
+		   	<< setw(PASSWORD_SIZE) << password << endl;
+		   	
+// Return true if the user is successfully registered
+   return outFile.good();
+}
+
 int main(){
 	cout << "\nWelcome to Registeration!\n" <<endl;
 	
-	ifstream users("users.txt");
+	ifstream inFile("users.txt");
+	if(!inFile){
+//		If there's no "users.txt" file exist, create it.
+		ofstream createFile("users.txt"); // Create empty file
+    	createFile.close();
+    	inFile.open("users.txt");  // Reopen it
+	}
 	
-	if(!users){
+	char *username = new char[USERNAME_SIZE];
+	char *password = new char[PASSWORD_SIZE];
+	
+//	Until you do not get a unique username keep getting a new username
+	do{
+	   getUsername(username);
+	}while(!isUnique(inFile, username));
+	
+//	Get password from the user.
+	getPassword(password);
+	
+//	Open file with append mode output file stream to append credentials.
+	ofstream outFile("users.txt", ios::app);
+	if(!outFile){
 		cout << "\nWe could not access Registration database this time.\n";
 		return 1;
 	}
 	
-	char *id = new char[10];
-	char *username = new char[30];
-	char *password = new char[30];
+//	If credentials have saved successfully, print success message.
+	if(writeToFile(outFile,inFile, username, password))
+		cout << "\nRegistration Successful!" << endl;
+
+	inFile.close();
+	outFile.close();
 	
-	do{
-	   getUsername(users, username);
-	}while(!isUnique(users, username));
-	
+	delete[] username;
+	delete[] password;
 	
 	return 0;
 }
