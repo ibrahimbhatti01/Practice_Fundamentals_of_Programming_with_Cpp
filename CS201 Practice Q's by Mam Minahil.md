@@ -3446,6 +3446,126 @@ int main(){
 
 >![alt text](image-70.png)
 
+## Problem Statement #04
+
+### 
+
+```C++
+//Solution
+/*
+This program, count  pending tasks, display them
+after that, it take task description, and append it to the file.
+*/
+
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+//Counting already existing tasks to deal with, appending Task number.
+int countTasks(ifstream &inFile){
+
+//	Start from begigining of the file
+	inFile.seekg(0L, ios::beg);
+
+	string line;
+	int count = 0;
+
+	while(getline(inFile, line)){
+		count++;
+	}
+
+//	Clear flags, if any for the next reading
+	inFile.clear();
+
+	return count;
+}
+
+void displayTasks(ifstream &inFile){
+
+	inFile.seekg(0L, ios::beg);
+
+	string line;
+
+	cout << "Current Tasks:" <<endl;
+
+	while(getline(inFile, line)){
+		cout << line <<endl;
+	}
+
+	inFile.clear();
+}
+
+//call by reference to update description in main program.
+void getDescription(string &description){
+
+	cout << "\nPlease enter a new task description: ";
+	cin.ignore();//<-Important to clear leftover `\n` from previous input
+	getline(cin, description);
+}
+
+bool writeTask(ofstream &outFile, int taskCount, string description){
+
+	outFile << "Task " << taskCount+1 << ": " << description <<endl;
+
+	outFile.clear();
+
+//	to print success message, checking if the task updation is done.
+	return outFile.good();
+};
+
+int main(){
+	cout << "Welcome to the To-Do List Manager!" <<endl;
+
+	string fPath;
+
+	cout << "Please enter the name of the to-do list file: ";
+	cin >> fPath;
+
+	//Separate openings for reading & writing, to have specific, dedicated function calls.
+	ifstream inFile(fPath);
+
+	if(!inFile){
+		cout << "[Error]File not found." <<endl;
+		return 1;
+	}else{
+		cout << "File opened successfully." <<endl;
+	}
+
+//	Count pending tasks.
+	int taskCount = countTasks(inFile);
+
+//	Displaying tasks.
+	displayTasks(inFile);
+
+	inFile.close();
+
+//	Getting new tasks, Call by reference here.
+	string description;
+ 	getDescription(description);
+
+	//Opening file for output append stream.
+	ofstream outFile(fPath, ios::app);
+
+	if(!outFile){
+		cout << "Output file couldn't found." <<endl;
+		return 1;
+	}
+	
+//	If task is updated successfully, print message.
+	if(writeTask(outFile, taskCount, description)){
+		cout << "Task added successfully." <<endl;
+		cout << "To-Do List Manager exiting.. File closed." <<endl;
+	}
+	
+	outFile.close();
+	
+	return 0;
+}
+```
+
+>![alt text](image-74.png)
+
 
 
 
@@ -3468,6 +3588,8 @@ int main(){
 >![alt text](image-68.png)
 
 >![alt text](image-72.png)
+
+>![alt text](image-73.png)
 
 ## #0 String Search Functions `<cstring>`
 
