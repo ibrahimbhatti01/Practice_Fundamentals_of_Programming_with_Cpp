@@ -3383,7 +3383,69 @@ int main(){
 }
 ```
 
->
+>![alt text](image-71.png)
+
+## Problem Statement #03
+
+### 
+
+```C++
+//Solution
+/*
+This program claculate alphanumeric characters in the file.
+Reads character-by-character and counts only
+letters and digits(a-z, A-Z, 0-9), ignoring spaces, symbols, and punctuation.
+*/
+
+#include <iostream>
+#include <fstream>
+#include <cctype> //<-For isalnum()
+
+using namespace std;
+
+int countAlnumChar(ifstream &inFile){
+	//Start from begining we might not miss any character.
+	inFile.seekg(0L, ios::beg);
+	
+	char ch;
+	int alphanumeric = 0;
+	
+	//get characters one by one, if alphanumeric is found, increment it.
+	while(inFile.get(ch)){
+		if(isalnum(ch)){
+			alphanumeric++;
+		}
+	}
+	
+	//Clear all the flags, and reset pointer position for next check.
+	inFile.clear();
+	
+	return alphanumeric;
+}
+
+int main(){
+	string fPath;
+	
+	cout << "\nEnter file name (with extension like 'data.txt'): ";
+	cin >> fPath;
+	
+	ifstream inFile(fPath);
+	
+	if(!inFile){
+		cout << "[Error] Input file is not found." <<endl;
+		return 1;
+	}
+	
+	cout << "\nNumber of alphanumeric characters in the file: " << countAlnumChar(inFile);
+	
+	inFile.close();
+	
+	return 0;
+}
+```
+
+>![alt text](image-70.png)
+
 
 
 
@@ -3404,6 +3466,8 @@ int main(){
 ## #0 Pointers | Arrays
 
 >![alt text](image-68.png)
+
+>![alt text](image-72.png)
 
 ## #0 String Search Functions `<cstring>`
 
