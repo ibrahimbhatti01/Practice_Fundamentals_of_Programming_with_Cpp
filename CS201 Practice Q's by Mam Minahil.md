@@ -3595,3 +3595,6 @@ int main(){
 
 >![alt text](image-67.png)
 
+# !! Some Motiv.. Sh*ts haha
+
+![alt text](image-76.png)
