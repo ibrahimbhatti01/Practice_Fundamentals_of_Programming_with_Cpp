@@ -2881,6 +2881,144 @@ int main(){
 
 >![alt text](image-63.png)
 
+## Problem Statement #0.1.2
+
+### check length of data in file, and print character at specific position
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main() {
+	string fPath = "editor.txt";
+//	cout << "enter path ";
+//	cin >> fPath;
+	
+	ifstream file(fPath);
+	
+//	file opening validation
+	if(!file.is_open()){
+		cerr << "[ERROR]" <<endl;
+		return 1;
+	}
+	
+	char ch;
+	int count = 0;
+	
+//	logic to check length of data in file
+//	while(file.get(ch)){
+//		count++;
+//	}
+	
+//	alternative logic to check the length of data in file, move at end and check position.
+	file.seekg(0, ios::end);
+	count = file.tellg();
+	
+	cout << "Your file has " << count <<" characters"<<endl;
+	
+//	clear flags if any, dur to the usage of ssekg above
+	file.clear();
+	
+//	move to a new position to check which character is there.
+	file.seekg(9, ios::beg);
+	
+	cout << "Current get pointer position is: " << file.tellg() <<endl;
+
+//	get character at currrent position at which we've moved with seekg now.
+	file.get(ch);
+	
+	cout << "Character at current position is " << ch <<endl;
+	
+	file.close();
+
+    return 0;
+}
+```
+
+>![alt text](image-78.png)
+
+## Problem Statement #0.1.3
+
+### Text updation
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main() {
+	string fPath = "apple.txt";
+//	cout << "enter path ";
+//	cin >> fPath;
+	
+	fstream file(fPath, ios::in | ios::out);
+	
+//	file opening validation
+	if(!file.is_open()){
+		cerr << "[ERROR]" <<endl;
+		return 1;
+	}
+	
+//	Move to end, check position to check the length.
+	file.seekg(0, ios::end);
+	cout << "Your file has " << file.tellg() << " characters." <<endl;
+	file.clear();
+	
+//	Move to begining to print data
+	file.seekg(0, ios::beg);
+	string line;
+	while(getline(file, line)){
+		cout << line <<endl;
+	}
+	file.clear();
+	
+//	Get position for overwriting data
+	int ovPos;
+	cout << "From which position do you wanna overwrite: ";
+	cin >> ovPos;
+	
+//	Move to that certain position
+	file.seekp(ovPos, ios::beg);
+	file.seekg(ovPos, ios::beg);
+	
+//	print character at that position, we got
+	char ch;
+//	it stores the last position, and print that character at that point.
+	file.get(ch);
+	cout << "Character at current position: " << ch <<endl;
+	
+	string newData;
+	
+	cin.ignore();
+	cout <<"Please enter data to write: " ;
+	getline(cin, newData);
+	
+//	write data into the file by converting string into char pointer string first
+	file.write(newData.c_str(), sizeof(newData));
+	
+	file.clear();
+	
+//	print updated data
+	file.seekg(0, ios::beg);
+	
+	while(getline(file, line)){
+		cout << line <<endl;
+	}
+	
+	file.clear();
+	file.close();
+
+    return 0;
+}
+```
+
+>![alt text](image-79.png)
+
 ## Problem Statement #0.2
 
 ### Processing payroll using file - Old methods
@@ -3771,7 +3909,6 @@ int main(){
 
 
 
-
 ## Problem Statement #0
 
 ### 
@@ -3782,6 +3919,10 @@ int main(){
 ```
 
 >
+
+
+
+
 
 # !! Cheats
 
