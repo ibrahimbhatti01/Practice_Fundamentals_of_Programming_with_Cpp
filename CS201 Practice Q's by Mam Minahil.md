@@ -3387,7 +3387,7 @@ int main(){
 
 ## Problem Statement #03
 
-### 
+### Calculate alphanumeric characters in file
 
 ```C++
 //Solution
@@ -3448,7 +3448,7 @@ int main(){
 
 ## Problem Statement #04
 
-### 
+### ToDo list app - Need to update
 
 ```C++
 //Solution
@@ -3565,6 +3565,208 @@ int main(){
 ```
 
 >![alt text](image-74.png)
+
+## Problem Statement #05
+
+### Simple text editor simulation - Need to update
+
+```C++
+//Solution
+/*
+This is a program to simulate text editor.
+-Implemented a while statement to keep prompting, until user choose to exit.
+Under first while, there's an if statement for main menu,
+After that, if user chooses to open file, it'll just enter operation menu, iff
+the file is successfully opened.
+then there's again a while loop, to keep working with that file, untill user exits.
+I used full modular approach, defined functions for specific tasks.
+*/
+
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+//Show main menu and return what users has choosed.
+//Receive a call by reference to use choice in program.
+int showMainMenu(int &choice){
+	// ===== Main Menu =====
+	cout << "Text Editor Menu:" <<endl;
+	cout << "1. Open File\n"
+ 		 << "2. Exit" <<endl;
+
+	cout << "Enter Your choice: ";
+	cin >> choice;
+	
+	return choice;
+}
+
+//open the file, return true if file is successfully opened
+bool openFile(fstream &file, const string &fPath, ios_base::openmode mode){
+	file.open(fPath, mode);
+	if(!file.is_open()){
+ 		cerr << "\n[Error] File not Found or File name might be wrong\n" <<endl;
+		return false;
+	}
+	return true;
+}
+
+//show options menu and return users choice
+int showOpMenu(int &opChoice){
+	// ===== File Operations Menu =====
+	cout << "1. Read from File\n"
+	 	 << "2. Write to File\n"
+	   	 << "3. File Pointer Position\n"
+		 << "4. Exit" <<endl;
+
+	cout << "Enter Your choice: ";
+	cin >> opChoice;
+	
+	return opChoice;
+}
+
+//read/print the file line by line from begining
+void readFile(fstream &file){
+//	start reading from the begining, to display all the contents.
+	file.seekg(0, ios::beg);
+
+	cout << "\nFile contents:" <<endl;;
+	string line;
+	while(getline(file, line)){
+		cout << line <<endl;
+	}
+
+//	clear all the flags if any
+	file.clear();
+}
+
+//read/print the specific character at any specific position, by taking position from user.
+void readCharacter(fstream &file){
+	char ch;
+	int pos;
+	cout << "\nEnter the positioon to see a caracter: ";
+	cin >> pos;
+	
+	file.seekg(pos, ios::beg);
+	
+	file.get(ch);
+	cout << "Character at position "<< pos << " is: " << ch << "\n" <<endl;
+	
+	file.clear();
+}
+
+//print the position of pointers after any opertion in the file.
+void printPointers(fstream &file){
+	cout << "\nCurrent Get pointer position: " << file.tellg() <<endl;
+ 	cout << "Current Put pointer position: " << file.tellp() << "\n" <<endl;
+}
+
+//ask for the position and overwrite at specific position
+bool writeToFile(fstream &file){
+	 char c;
+	int pPosition;
+	cout << "Enter position to write: ";
+	cin >> pPosition;
+	
+	file.seekp(pPosition, ios::beg);
+	
+//	clear '\n' leftover by the previous input, to take input successfully with other methods.
+	cin.ignore();
+	
+	cout << "Enter data to write: \n";
+	
+	while((c=getchar()) != '\n'){
+		file.put(c);
+	}
+	
+//	return true if operation successful, to print sucess message.
+	return file.good();
+}
+
+int main(){
+//	now editor object will be in scope to all the function calls below.
+	fstream editor;
+	
+	string fPath;
+	
+//  choice for main menu, and opChoice(options choice) for sub menu.
+	int choice, opChoice;
+	
+//	to handle program loop at different levels
+	bool exit = false;
+	
+	while(!exit){
+		// ===== Main Menu =====
+		showMainMenu(choice);
+
+		if(choice == 1){
+			cout << "Enter File name: ";
+ 	 		cin >> fPath;
+
+			if(openFile(editor, fPath, ios::in | ios::out | ios::ate)){
+				cout << "\n---File opened successfully.---\n" <<endl;
+	 		}else{
+	 			continue;// Loop back to main menu instead of ending program.
+			}
+	 		
+			while(!exit){
+				// ===== File Operations Menu =====
+				showOpMenu(opChoice);
+
+				switch(opChoice){
+		 			case 1:{
+//						 read file contents and display.
+		 				readFile(editor);
+
+//                      read char at specific position.
+		 				readCharacter(editor);
+		 				
+						break;
+					}
+					case 2:{
+						 if(writeToFile(editor)){
+						 	cout << "\n---Data written successfully---\n" <<endl;
+						 }
+						 
+						break;
+					}
+					case 3:{
+//						check pointer positions and display.
+						printPointers(editor);
+						break;
+					}
+					case 4:{
+						exit = true;
+
+						editor.close();
+						cout << "\nFile closed. Exiting Text Editor.." << endl;
+						break;
+					}
+					default:{
+						cerr << "\n[Error] Invalid choice.\n" <<endl;
+						break;
+					}
+				 }
+			}
+		}else if(choice == 2){
+			exit = true;
+			cout << "\nExiting Text Editor.. ";
+
+			if(editor.is_open()){
+		 		editor.close();
+				cout << "File closed.";
+			}
+		}else{
+			cerr << "\n[Error] Invalid choice.\n" <<endl;
+		}
+	}
+	
+	return 0;
+}
+```
+
+>![alt text](image-77.png)
+
 
 
 
