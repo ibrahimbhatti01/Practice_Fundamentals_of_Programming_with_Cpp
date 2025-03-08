@@ -3905,6 +3905,453 @@ int main(){
 
 >![alt text](image-77.png)
 
+---
+---
+
+# !! Structures
+
+## Problem Statement #00 - Notes
+
+### Notes for Structures + Union
+
+```C++
+//Solution - NEC (non executeable code)
+#include <iostream>
+
+using namespace std;
+
+int main() {
+//	===Struct definition===
+	struct Student{
+		char name[60];
+		char address[100];
+		double gpa;
+	};
+
+//	Struct declaration
+	Student s1, s2, s3;
+
+
+	struct Address{
+		char streetAddress[100];
+		char city[30];
+		char country[30];
+	};
+
+//	Struct definition and declaration + Struct in struct.
+	struct Student{
+		char name[60];
+		Address add; //<-Struct in struct
+		double gpa;
+	}s1, s2, s3; //<-declaration
+
+
+//	Pointers in Structs
+	struct Card{
+		char *suits;
+		char *values;
+	};
+
+
+//	Struct declaration as Pointers
+	Student *sPtr; //<-sPtr is a pointer to a variable Student of struct data type.
+
+
+//	Struct declaration as Arrays
+	Student s[100];
+
+
+//	Struct addition isn't allowed, i.e. (s1 + s2) is [ERROR]
+//  Struct can be assigned, (s1 = s2) is allowed.
+
+
+	struct Student{
+		char name[50];
+		char course[50];
+		int age;
+		int year;
+	};
+
+//  Struct initialization
+	Student s1 = {"Ibrahim", "CS201", "20", "2025"};
+
+
+	s1.age = 20;
+	s1.name = "Ibrahim"; //<-Wrong
+	strcpy(s1.name, "Ibrahim"); //Instead of above we do this.
+
+
+	cout << s1.name;
+	cout << s1.age;
+	cout << s1.course;
+	cout << s1.address;
+
+
+//	To copy Student s1 data into s2
+	Student s2 = s1;
+
+
+//	Pointer to Structure & Manipulation
+	Student *sPtr, s1;
+	sPtr = s1; // sPtr is now pointing towards s1 and it's data
+	sPtr.name; //Wrong, We can't manipulate name using this.
+	*(sPtr).name; //True. Precedence managed.
+
+	sPtr -> name; //Used to manipulate name.
+//	same as
+	s1.name;
+
+
+//	Arrays of Structures
+	Student s[100];
+	s[0].name;
+	s[1].name;
+	s[2].name; //... index belongs to the structure, nit data member
+	
+	
+//	===UNIONS===
+//	union definition
+	union intOrDouble{
+		int ival;
+		double dval;
+	};
+	
+//	union declaration of type intOrDouble
+	intOrDouble u1;
+	
+//	Assigning value
+	u1.uval = 10;
+	
+//	For	 u1.uval = 10;
+	cout << u1.ival; //True
+	cout << u1.dval; //Wrong, There'll be strange output, cause dval is still not defined.
+	
+	u1.dval = 100.0;
+	
+//	Now, For u1.dval = 100.0;
+	cout << u1.dval; //True
+	cout << u1.ival; //Wrong - incorrect value
+	
+	reurn 0;
+}
+```
+
+>
+
+## Problem Statement #0.1
+
+### Take/Print student data
+
+```C++
+//Solution (06-March - 4th gonna be start)
+#include <iostream>
+
+using namespace std;
+
+int main() {
+	struct Student{
+		char firstName[30];
+		char lastName[30];
+		char course[30];
+		char rollNo[10];
+		int age;
+		float gpa;
+	};
+	
+	Student s[1];
+	for(int i=0; i<1; i++){
+		cout << "Please enter First name of student " << i+1 << ": ";
+		cin >> s[i].firstName;
+		cout << "Please enter Last name of student " << i+1 << ": ";
+		cin >> s[i].lastName;
+		cout << "Please enter course name of student " << i+1 << ": ";
+		cin >> s[i].course;
+		cout << "Please enter roll no. of student " << i+1 << ": ";
+		cin >> s[i].rollNo;
+		cout << "Please enter age of student " << i+1 << ": ";
+		cin >> s[i].age;
+		cout << "Please enter gpa of student " << i+1 << ": ";
+		cin >> s[i].gpa;
+	}
+	
+	cout << "\nThis is the data of Students: " <<endl;
+	for(int i=0; i<1; i++){
+		cout << "Data of Student " << i+1 << ": " <<endl;
+		cout << "Name = " << s[i].firstName << " " << s[i].lastName <<endl;
+		cout << "Course = " << s[i].course <<endl;
+		cout << "Roll No. = " << s[i].rollNo <<endl;
+		cout << "Age = " << s[i].age <<endl;
+		cout << "GPA = " << s[i].gpa <<endl;
+	}
+	
+
+    return 0;
+}
+```
+
+>![alt text](image-80.png)
+
+## Problem Statement #0.2
+
+### Read a structure from File
+
+```C++
+//Solution
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+//It returns a Student type structure by extracting data from file.
+// Student => Return Type
+// getData => Function Name
+Student getData(ifstream &file){
+//  A temporary variable of type Student structure to return a structure.
+	Student tempStudent;
+	
+	file >> tempStudent.firstName;
+	file >> tempStudent.lastName;
+	file >> tempStudent.course;
+	file >> tempStudent.rollNo;
+	file >> tempStudent.age;
+	file >> tempStudent.gpa;
+	
+	return tempStudent;
+}
+
+int main() {
+	ifstream inFile("example4.txt");
+	
+	if(!inFile.is_open()){
+		cerr << "[ERROR] File not found." <<endl;
+		return 1;
+	}
+	
+	struct Student{
+		char firstName[30];
+		char lastName[30];
+		char course[30];
+		char rollNo[10];
+		int age;
+		float gpa;
+	};
+	
+	Student s1;
+	s1 = getData(inFile);
+
+	inFile.close();
+
+    return 0;
+}
+```
+
+>
+
+## Problem Statement #01
+
+### AddressBook system - Can be updated
+
+```C++
+//Solution
+#include <iostream>
+#include <limits> //For numeric limits to clear input buffer
+
+using namespace std;
+
+//Define constant for maximum number of contacts
+const int MAX_CONTACTS = 10;
+
+//Struct to hold contact details like below.
+struct AddressBook{
+	string name;
+	string phoneNumber;
+	string email;
+};
+
+//Function to show the main menu and take user input
+int showMain(){
+	int choice;
+	
+	//Display main menu options
+	cout << "Address Book Menu:" <<endl;
+		cout << "1. Add Contact\n"
+			 << "2. Display Contacts\n"
+			 << "3. Search Contacts\n"
+			 << "4. Delete Contact\n"
+			 << "5. Exit\n" << endl;
+
+	cout << "Please enter your choice: ";
+	cin >> choice;
+	
+	//Check if input fails, i.e: for non-integers
+	if(cin.fail()){
+        cin.clear(); // Clear the error flag
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard the invalid input
+        cerr << "\n[ERROR] Invalid choice! Please enter a valid number.\n" << endl;
+        return -1; // Return -1 to indicate invalid input & so the loop continues
+    }
+	
+	return choice;//Return valid choice
+}
+
+//Function to get new contact details and return the filled AddressBook struct.
+ AddressBook getContact(){
+ 	AddressBook tempContact;
+ 	
+	//Taking name input and using getline to allow spaces.
+	cout << "Enter Name: ";
+	cin.ignore();//Clear any leftover newline character
+	getline(cin, tempContact.name);
+	
+	cout << "Enter Phone Number: ";
+	cin >> tempContact.phoneNumber;
+	
+	cout << "Enter Email: ";
+	cin >> tempContact.email;
+	
+	return tempContact;//Return populated AddressBook struct
+}
+
+//Function to display all contacts
+void displayContacts(AddressBook contacts[], int totalContacts){
+	cout << "\nContacts in address book: " <<endl;
+	//Iterate through the array and display each contact's details
+	for(int i=0; i<totalContacts; i++){
+		cout << "Name: " << contacts[i].name
+			 << ", Phone: " << contacts[i].phoneNumber
+			 << ", Email: " << contacts[i].email <<endl;
+	}
+	cout << "\n";
+}
+
+//Function to earch for a contact by name and return index
+int searchContact(AddressBook contacts[], int totalContacts){
+	string searchName;
+	
+	cout << "Enter name of the contact: ";
+	cin.ignore();
+	getline(cin, searchName);
+
+	//if user did an empty search, display error.
+    if (searchName.empty()) {  // Handle empty search name
+        cerr << "\n[ERROR] Search name cannot be empty!\n" << endl;
+        return -1;
+    }
+
+	//Iterate through the array and if name matches return index of the first match
+	for(int i=0; i<totalContacts; i++){
+		if(contacts[i].name == searchName){
+			return i;//Return index of found contact
+		}
+	}
+	return -1;//Return -1 if contact not found.
+}
+
+//Function to delete contact from array, based on index
+void deleteContact(AddressBook contacts[], int *totalContacts,const int index){
+	//Shift all the instances after the specified index by left
+	//It'll override that specific index, and hence removed.
+	 for(int j=index; j < *totalContacts-1; j++){
+		contacts[j] = contacts[j+1];
+	 }
+	 //Decrease total contact count to reflect ddeletion
+	 (*totalContacts)--;
+}
+
+int main() {
+	AddressBook contacts[MAX_CONTACTS];//Array to hold the contacts
+	
+//	Initially, supppose their is no contact, so we'll track
+//  how many contacts have been saved. It'll help us throughout the logic.
+	int totalContacts = 0;
+	
+	bool exit = false;//A flag to control program exit
+	
+	while(!exit){
+		int choice = showMain();//Display main menu & get user choice
+		
+		//if invalid choice, continue to next iteration, and take choice again.
+		if(choice == -1){
+			continue;
+		}
+		
+		//Switch case to handle different menu options
+		switch(choice){
+			case 1:{
+				//if max contacts have been saved, show error
+				if(totalContacts == MAX_CONTACTS){
+					cerr << "\n[ERROR] Maximum contacts limit have been reached.\n" <<endl;
+				}else{
+					contacts[totalContacts] = getContact();//Add a new contact
+					totalContacts++;//Increase contact count
+					cout << "\n---Contact Added Successfully---\n" <<endl;
+				}
+				break;
+			}
+			case 2:{
+				//If no contacts added, show error
+				if(totalContacts == 0){
+					cerr << "\n[ERROR] No Contact. Choose 1 to add first.\n" <<endl;
+				}else{
+					displayContacts(contacts, totalContacts);//Display all contacts
+				}
+				break;
+			}
+			case 3:{
+				//if no contacts are added, show an error.
+				if(totalContacts == 0){
+					cerr << "\n[ERROR] No Contact to search. Choose 1 to add first.\n" <<endl;
+				}else{
+					int index = searchContact(contacts, totalContacts);//Search for a contact
+
+					//If found, display the contact details
+					if(index != -1){
+					cout << "\nName: " << contacts[index].name
+				 		 << ", Phone: " << contacts[index].phoneNumber
+		 		 		 << ", Email: " << contacts[index].email <<endl;
+						 cout << "\n";
+			 		}else{
+						 cerr << "\n[ERROR] No Search result found.\n" <<endl;
+					}
+				}
+				break;
+			}
+			case 4:{
+				//If no contacts are added, show an error
+				if(totalContacts == 0){
+					cerr << "\n[ERROR] No Contact to Delete. Choose 1 to add first.\n" <<endl;
+				}else{
+					int index = searchContact(contacts, totalContacts);//Search for a contact to delete
+					
+					//if found delete the contact
+					if(index != -1){
+						deleteContact(contacts, &totalContacts, index);
+						cout << "\n---Contact Deleted Successfully---\n" <<endl;
+					}else{
+			  			  cerr << "\n[ERROR] Contact not found.\n" <<endl;
+					}
+				}
+				break;
+			}
+			case 5:{
+				 exit = true;//Exit the program
+				 cout << "\nExiting program.."<<endl;
+				break;
+			}
+			default:{
+				cerr << "\n[ERROR] Invalid Choice\n" <<endl;//Hanle invalid choices
+				break;
+			}
+		}
+	}
+	
+	return 0;
+}
+```
+
+>![alt text](image-81.png)
+
+
 
 
 
