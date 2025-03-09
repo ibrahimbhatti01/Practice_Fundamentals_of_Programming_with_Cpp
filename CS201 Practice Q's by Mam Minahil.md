@@ -4351,6 +4351,313 @@ int main() {
 
 >![alt text](image-81.png)
 
+## Problem Statement #02
+
+### ABC Banking System - Can be updated
+
+```C++
+//Solution
+/*
+ Bank Account Management System
+
+A simple banking system that allows users to create accounts, deposit money, withdraw funds,
+and view account details. The system supports up to 100 accounts and includes input validation
+for user actions. Basic error handling is implemented for invalid inputs, insufficient funds,
+and duplicate account numbers.
+
+Features:
+- Account creation with unique account numbers
+- Deposit and withdrawal with balance checks
+- Display account details
+- Menu-driven interface with error handling
+ */
+
+
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+//Global, to Keep track of total number of accounts created.
+int totalAccounts = 0;
+
+//Defining Constant Limit of Maximum accounts system can hold.
+const int MAX_ACCOUNTS = 100;
+
+//struct to hold details of each account.
+struct BankAccount{
+	int accNumber;
+	string accHolderName;
+	double balance;
+};
+
+//Function to show the main menu and take user choice
+int showMainMenu(){
+	int choice;
+
+	//Display main menu options
+	cout << "Bank Account Management System" <<endl;
+		cout << "1. Create Account\n"
+			 << "2. Depposit Money\n"
+			 << "3. Withdraw Money\n"
+			 << "4. Display Account Details\n"
+			 << "5. Exit\n" << endl;
+
+	cout << "Please enter your choice: ";
+	cin >> choice;
+
+	//Check for input errors (non-integer input).
+	if(cin.fail()){
+        cin.clear(); // Clear the error flag
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard the invalid input
+        cerr << "\n[ERROR] Invalid choice! Please enter a valid number.\n" << endl;
+        return -1; // Return -1 to indicate invalid input & so the loop continues
+    }
+
+	return choice;//Return valid choice
+}
+
+//Function to check if atleast one account exists in system.
+bool hasAccounts() {
+    if (totalAccounts == 0) {
+        cerr << "\n[ERROR] Please create your account first.\n" << endl;
+        return false;
+    }
+    return true;
+}
+
+//Function to get validated account number from user.
+int getAccNumber(){
+	int accNumber;
+	
+	bool valid;
+	do{
+		valid = true;
+		
+		cout << "Enter Account Number: ";
+		cin >> accNumber;
+
+		//Check if input fails, i.e: for non-integers
+		if(cin.fail()){
+	        cin.clear(); // Clear the error flag
+	        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard the invalid input
+	        cerr << "\n[ERROR] Invalid Input! Please enter a valid Account Number.\n" << endl;
+	        valid = false; // continue asking untill valid input
+	    }
+    }while(!valid);
+	
+	return accNumber; // Return valid account number.
+}
+
+//Function to get valid monetary amount from user. (for deposit or withdrawl)
+double getAmount(){
+	double amount;
+
+	bool valid;
+	do{
+		valid = true;
+
+		cout << "Enter Amount: ";
+		cin >> amount;
+
+		//Check if input fails, i.e: for non-integers
+		if(cin.fail()){
+	        cin.clear(); // Clear the error flag
+	        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard the invalid input
+	        cerr << "\n[ERROR] Invalid Input! Please enter a valid  amount.\n" << endl;
+	        valid = false; // continue asking until valid input.
+	    }else if(amount < 1){
+	    	valid = false;
+	    	cerr << "\n[ERROR] Invalid input! Amount must be greater than 0.\n" <<endl;
+		}
+    }while(!valid);
+
+	return amount;//Return valid amount
+}
+
+
+//Function to check if the account number is unique (does not exist already).
+bool isUniqueAcc(const int accNumber,const BankAccount accounts[]){
+	for(int i=0; i<totalAccounts; i++){
+		if(accounts[i].accNumber == accNumber){
+   			cerr << "\n[ERROR] Account Number already exists.\n" <<endl;
+			return false; //Accoutnt number is not unique.
+		}
+	}
+	return true;//Account number is unique.
+}
+
+//Function to create a new bank account
+void createAcc(BankAccount accounts[]){
+	BankAccount tempAcc;
+	
+	//Get account number until it's unique.
+	do{
+		tempAcc.accNumber = getAccNumber();
+	}while(!isUniqueAcc(tempAcc.accNumber, accounts));
+		
+	//get account holder name and ensure it's not empty
+	bool empty;
+	do{
+		empty = true;
+		
+		cout << "Enter Account Holder Name: ";
+		cin.ignore();
+		getline(cin, tempAcc.accHolderName);
+		
+		if(tempAcc.accHolderName.empty()){
+			cerr << "\n[ERROR] Account Holder Name cannot be empty.\n" <<endl;
+		}else{
+			empty = false;
+		}
+	}while(empty);
+	
+	tempAcc.balance = 0.0; //Initially account balance will be zero.
+	
+	//Store the newly created account in the accounts array.
+	accounts[totalAccounts] = tempAcc;
+	totalAccounts++;
+	
+	cout << "\n---Account Created Successfully---\n" <<endl;
+}
+
+//Function to deposit money into a bank account
+void deposit(BankAccount accounts[]){
+	bool found = false;
+	
+	//Get account number and search for the account
+	int accNumber = getAccNumber();
+
+	for(int i=0; i<totalAccounts; i++){
+ 		if(accounts[i].accNumber == accNumber){
+ 			found = true;
+ 			
+  			double amount = getAmount();
+  			
+			accounts[i].balance += amount;//Update account balance
+			
+			cout << "Deposited $" << amount << " into "<< accounts[i].accHolderName <<" account." <<endl;
+			cout << "New balance: $" << accounts[i].balance << "\n" <<endl;
+			break;
+		}
+	}
+	
+	if(!found){
+		cerr << "\n[ERROR] Your Account Number does not found.\n" <<endl;
+	}
+}
+
+// Function to withdraw money from a bank account
+void withdraw(BankAccount accounts[]){
+	int accNumber = getAccNumber();
+	bool found = false;
+	
+	//search for the account to withdraw from.
+	for(int i=0; i<totalAccounts; i++){
+ 		if(accounts[i].accNumber == accNumber){
+ 			found = true;
+  			double amount = getAmount();
+  			
+  			//Check if there are sufficient funds
+			if(amount <= accounts[i].balance){
+				accounts[i].balance -= amount;//update account balance
+				cout << "$" << amount << " has been withdrawn from "<< accounts[i].accHolderName <<" account." <<endl;
+				cout << "New balance: $" << accounts[i].balance << "\n" <<endl;
+			}else{
+				cerr << "\n[ERROR] You doesn't have sufficient balance.\n" <<endl;
+			}
+			break;
+		}
+	}
+	
+	if(!found){
+		cerr << "\n[ERROR] Your Account Number does not found.\n" <<endl;
+	}
+}
+
+// Function to display the account details for a specific account number
+void displayAccDetails(BankAccount accounts[]){
+	int accNumber = getAccNumber();
+	bool found = false;
+
+	//Search for the account to display it's details
+	for(int i=0; i<totalAccounts; i++){
+ 		if(accounts[i].accNumber == accNumber){
+ 			found = true;
+				cout << "\nAccount Number: " << accounts[i].accNumber << "\n"
+					 << "Account Holder Name: " << accounts[i].accHolderName <<"\n"
+					 << "Balance: $" << accounts[i].balance << "\n" <<endl;
+			break;
+		}
+	}
+
+	if(!found){
+		cerr << "\n[ERROR] Your Account Number does not found.\n" <<endl;
+	}
+}
+
+
+
+
+int main() {
+	bool exit = false;//A flag to control program exit
+	
+	cout << "\n---Welcome to ABC Banking Systems---\n" <<endl;
+	
+	//Array to hold accounts.
+	BankAccount accounts[MAX_ACCOUNTS];
+
+	while(!exit){
+		int choice = showMainMenu();//Display main menu & get user choice
+
+		//if invalid choice, continue to next iteration, and take choice again.
+		if(choice == -1){
+			continue;
+		}
+
+		//Switch case to handle different menu options
+		switch(choice){
+			case 1:{
+				createAcc(accounts);//Create a new account
+				break;
+			}
+			case 2:{
+				if(hasAccounts()){
+					deposit(accounts);//If there're accounts, deposit money
+				}
+				break;
+			}
+			case 3:{
+				if(hasAccounts()){
+					withdraw(accounts);//If there're accounts, withdraw money
+				}
+				break;
+			}
+			case 4:{
+				if(hasAccounts()){
+					displayAccDetails(accounts);//If there're accounts, display details
+				}
+				break;
+			}
+			case 5:{
+				 exit = true;//Exit the program
+				 cout << "\nExiting program.."<<endl;
+				break;
+			}
+			default:{
+				cerr << "\n[ERROR] Invalid Choice\n" <<endl;//Hanle invalid choices
+				break;
+			}
+		}
+	}
+
+	return 0;
+}
+```
+
+>![alt text](image-82.png)
+
+
 
 
 
