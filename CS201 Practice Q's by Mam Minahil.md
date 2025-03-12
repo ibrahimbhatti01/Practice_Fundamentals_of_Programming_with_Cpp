@@ -4657,6 +4657,335 @@ int main() {
 
 >![alt text](image-82.png)
 
+## Problem Statement #03
+
+### ABC PRODUCT INVENTORY MANGEMENT - Need to update
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+
+struct Product{
+	int id;
+	string name;
+	int quantity; //Quantity in stock
+	double price;
+};
+
+
+//Function to handle input failure for cin, if failed it'll make failed = true.
+//So, we can keep asking for input until valid input.
+bool inputFailed(){
+	if(cin.fail()){
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cerr << "\n[ERROR] Invalid input!\n" <<endl;
+			return true;
+	}
+	return false;
+}
+
+
+bool isIdUnique(const int &id, const vector<Product> &inventory){
+	for(const Product &product : inventory){
+		if(id == product.id){
+			return false;
+		}
+	}
+	return true;
+}
+
+
+int getId(){
+	int id;
+	do{
+		cout << "Enter Product ID: ";
+		cin >> id;
+	}while(inputFailed());
+	
+	return id;
+}
+
+
+string getProductName(){
+	string name;
+	
+	do{
+		
+		cout << "Enter Name: ";
+		cin.ignore();
+		getline(cin, name);
+
+		if(name.empty()){
+			cerr << "\n[ERROR] Product name cannot be empty.\n" <<endl;
+		}
+	}while(name.empty());
+	
+	return name;
+}
+
+
+int getProductQuantity(){
+	int quantity;
+	
+	do{
+		cout << "Enter Product Quantity: ";
+		cin >> quantity;
+		if(quantity < 0){
+			cerr << "\n[ERROR] invalid Input! Product Quantity must be positive.\n" <<endl;
+		}
+	}while(inputFailed() || quantity < 0);
+	
+	return quantity;
+}
+
+
+double getProductPrice(){
+	double price;
+	
+	do{
+		cout << "Enter Product Price: ";
+		cin >> price;
+		if(price < 0){
+			cerr << "\n[ERROR] invalid Input! Product Price must be positive.\n" <<endl;
+		}
+	}while(inputFailed() || price < 0);
+	
+	return price;
+};
+
+
+void addProduct(vector<Product> &inventory){
+	Product tempProduct;
+
+	int id;
+	bool unique;
+	do{
+		unique = true; //Assuming id is unique initially
+		
+		id = getId();
+		
+		//Do not check for the uniqueness of id, if inventory is empty.
+		if(inventory.size() > 0){
+			unique = isIdUnique(id, inventory); // It'll return true if unique.
+			if(!unique){
+				cerr << "\n[ERROR] Product Id already exist, It must be unique.\n" <<endl;
+			}
+		}
+	}while(!unique);
+	tempProduct.id = id;
+	
+	
+	tempProduct.name = getProductName();
+	
+	
+	tempProduct.quantity = getProductQuantity();
+	
+	
+	tempProduct.price = getProductPrice();
+
+
+	inventory.push_back(tempProduct);
+	cout << "\n---Product added successfully---\n" <<endl;
+}
+
+
+
+void displayInventory(const vector<Product> &inventory){
+	if(inventory.size() > 0){
+		cout <<"\n"
+			 << setw(7) << "ID"
+			 << setw(30) << "Name"
+			 << setw(7) << "Quantity"
+			 << setw(10) << "Price"
+			 <<endl;
+		for(const Product product : inventory){
+			cout << setw(7) << product.id
+				 << setw(30) << product.name
+				 << setw(7) << product.quantity
+				 << setw(10) << product.price
+				 << endl;
+		}
+		cout << "\n" << endl;
+	}else{
+		cout << "\n[ERROR]Your current Products inventory list is empty.\n" <<endl;
+	}
+};
+
+
+
+void updateProduct(vector<Product> &inventory, int id){
+	for(Product &product : inventory){
+		if(product.id == id){
+			product.name = getProductName();
+			product.quantity = getProductQuantity();
+			product.price = getProductPrice();
+		}
+	}
+	cout << "\n---Product Updated Successfully---\n" <<endl;
+};
+
+
+void deleteProduct(vector<Product> &inventory, int id){
+	for(vector<Product>::iterator it=inventory.begin();
+ 		it != inventory.end(); ++it){
+		   if(it->id == id){
+		   	inventory.erase(it);
+		   	
+		   	cout << "\nProduct with ID " << id << " has been deleted successfully.\n" << endl;
+            return; // Return after deleting, since the product is deleted.
+		   }
+		 }
+
+};
+
+
+//This function returns a pointer to the searched object of Product.
+const Product *searchProduct(const vector<Product> &inventory, int id){
+	for(const Product &product : inventory){
+		if(product.id == id){
+			return &product;
+		}
+	}
+	return NULL;
+};
+
+
+
+
+
+
+int getMainMenuChoice(){
+	int choice;
+
+	do{
+		cout << "1. Add Product\n"
+			 << "2. Display Inventory\n"
+			 << "3. Update Product\n"
+			 << "4. Delete Product\n"
+			 << "5. Search Product\n"
+			 << "6. Exit\n" << endl;
+
+		cout << "Enter your choice: ";
+		cin >> choice;
+
+	}while(inputFailed());
+
+	return choice;
+}
+
+
+
+int main(){
+	cout << "\n---ABC Product Inventory Systems---\n" <<endl;
+
+	vector<Product> inventory; //inventory vector to store details of all the products
+
+	bool exit = false;
+
+	while(!exit){
+		int choice = getMainMenuChoice();
+
+		switch(choice){
+			case 1:{
+				addProduct(inventory);
+				break;
+			}
+			case 2:{
+				displayInventory(inventory);
+				break;
+			}
+			case 3:{
+				int id;
+				if(inventory.size() > 0){
+					//get id, if it's unique, it means bo product exist of this id in the inventory,
+					//Repeat getting id, until a valid id for a product is found.
+					do{
+						id = getId();
+						if(isIdUnique(id, inventory)){
+							cerr << "\n[ERROR] No Product found with this ID.\n" <<endl;
+						}
+					}while(inputFailed() || isIdUnique(id, inventory));
+					
+					updateProduct(inventory, id);
+				}else{
+					cerr << "\n[ERROR] Your Current inventory list is empty\n" <<endl;
+				}
+				break;
+			}
+			case 4:{
+				int id;
+				if(inventory.size() > 0){
+					//get id, if it's unique, it means bo product exist of this id in the inventory,
+					//Repeat getting id, until a valid id for a product is found.
+					do{
+						id = getId();
+						if(isIdUnique(id, inventory)){
+							cerr << "\n[ERROR] No Product found with this ID.\n" <<endl;
+						}
+					}while(inputFailed() || isIdUnique(id, inventory));
+					
+					deleteProduct(inventory, id);
+				}else{
+					cerr << "\n[ERROR] Your Current inventory list is empty\n" <<endl;
+				}
+				break;
+			}
+			case 5:{
+				int id;
+				if(inventory.size() > 0){
+					//get id, if it's unique, it means bo product exist of this id in the inventory,
+					//Repeat getting id, until a valid id for a product is found.
+					do{
+						id = getId();
+						if(isIdUnique(id, inventory)){
+							cerr << "\n[ERROR] No Product found with this ID.\n" <<endl;
+						}
+					}while(inputFailed() || isIdUnique(id, inventory));
+
+					const Product *product = searchProduct(inventory, id);
+					
+					cout <<"\n"
+						 << setw(7) << "ID"
+						 << setw(30) << "Name"
+						 << setw(7) << "Quantity"
+						 << setw(10) << "Price"
+						 <<endl;
+					cout << setw(7) << product->id
+						 << setw(30) << product->name
+						 << setw(7) << product->quantity
+						 << setw(10) << product->price
+						 << "\n" << endl;
+					
+				}else{
+					cerr << "\n[ERROR] Your Current inventory list is empty\n" <<endl;
+				}
+				break;
+			}
+			case 6:{
+				exit = true;
+				cout << "\nExiting Program..." <<endl;
+				break;
+			}
+			default:{
+				cerr << "\n[ERROR] Invalid Choice!\n" <<endl;
+				break;
+			}
+		}
+	}
+
+	return 0;
+}
+```
+
+>
+
 
 
 
@@ -4692,6 +5021,6 @@ int main() {
 
 >![alt text](image-67.png)
 
-# !! Some Motiv.. Sh*ts haha
+# !! Some Motiv.. Sh*ts xD
 
 ![alt text](image-76.png)
