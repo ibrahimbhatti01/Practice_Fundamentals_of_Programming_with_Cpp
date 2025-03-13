@@ -4986,6 +4986,367 @@ int main(){
 
 >
 
+## Problem Statement #04
+
+### ABC Event Management Systems
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+#include <cstring>
+#include <vector>
+
+using namespace std;
+
+// Structure to store event details
+struct Event{
+	string name;
+	string date;
+	string startTime;
+	string endTime;
+	string description;
+};
+
+// Checks if the last input failed, resets input stream if needed
+bool inputFailed(){
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input, Input must be an integer.\n" <<endl;
+		return true;
+	}
+	return false;
+}
+
+// Displays main menu and gets user choice
+int getMainChoice(){
+	int choice;
+	
+	cout << "\n= Welcome to ABC Event Management Systems =\n\n"
+		 << "1. Add Event\n"
+		 << "2. Display All Events\n"
+		 << "3. Display Events for a Specific Date\n"
+		 << "4. Exit\n"
+		 << "===========================================\n"
+		 << endl;
+		 
+	do{
+		cout << "Enter your choice: ";
+		cin >> choice;
+		cin.ignore(); // Prevents issues with `getline` after `cin`
+	}while(inputFailed());
+	
+	return choice;
+}
+
+// Validates date format (YYYY-MM-DD)
+bool isDateValid(const string &date){
+	 if(date.length() != 10) return false;
+	 if(date.at(4) != '-' || date.at(7) != '-') return false;
+	 
+	int year = stoi(date.substr(0, 4));
+	int month = stoi(date.substr(5, 2));
+	int day = stoi(date.substr(8,2));
+	
+	if(year < 1900 || year > 2100) return false;
+	if(month < 1 || month > 12) return false;
+	if(day < 1 || day > 31) return false;
+	if(month == 2 && day > 28) return false; // Basic February validation (ignores leap years)
+	
+	return true;
+}
+
+// Validates time format (HH:MM)
+bool isTimeValid(const string &time){
+	if(time.length() != 5) return false;
+	if(time.at(2) != ':') return false;
+	   
+	int hours = stoi(time.substr(0, 2));
+	int mins = stoi(time.substr(3, 2));
+	
+	if(hours < 0 || hours > 23) return false;
+	if(mins < 0 || mins > 59) return false;
+	   
+	return true;
+}
+
+// Adds a new event to the events list
+void addEvent(vector<Event> &events){
+	Event tempEvent;
+	
+	// Get event name (should not be empty)
+	do{
+		cout << "Enter event name: ";
+		getline(cin, tempEvent.name);
+		if(tempEvent.name.empty()) cerr << "\n[ERROR] Event Name cannot be empty.\n" <<endl;
+	}while(tempEvent.name.empty());
+	
+	// Get and validate event date
+	{
+		string date;
+		bool valid;
+		do{
+			cout << "Enter event date (YYYY-MM-DD): ";
+			getline(cin, date);
+			valid = isDateValid(date);
+			if(!valid) cerr << "\n[ERROR] Invalid date format.\n" <<endl;
+		}while(!valid);
+		tempEvent.date = date;
+	}
+	
+	// Get and validate event start time
+	{
+		string startTime;
+		bool valid;
+		do{
+			cout << "Enter start time (HH:MM): ";
+			getline(cin, startTime);
+			valid = isTimeValid(startTime);
+			if(!valid) cerr << "\n[ERROR] Invalid Time format.\n" <<endl;
+		}while(!valid);
+		tempEvent.startTime = startTime;
+	}
+	
+	// Get and validate event end time
+	{
+		string endTime;
+		bool valid;
+		do{
+			cout << "Enter End Time (HH:MM): ";
+			getline(cin, endTime);
+			valid = isTimeValid(endTime);
+			if(!valid) cerr << "\n[ERROR] Invalid Time format.\n" <<endl;
+		}while(!valid);
+		tempEvent.endTime = endTime;
+	}
+	
+	// Get event description (optional)
+	{
+		cout << "Enter event description: ";
+		getline(cin, tempEvent.description);
+		if(tempEvent.description.empty()) tempEvent.description = "No Description.";
+	}
+	
+	// Store event in vector
+	events.push_back(tempEvent);
+	cout << "\n--- Event Added Successfully ---\n" <<endl;
+}
+
+// Displays all saved events
+void displayAllEvents(const vector<Event> &events){
+	if(events.empty()){
+		cout << "\n[ERROR] Your event list is empty.\n" <<endl;
+	}else{
+		cout << "\n--- List of All Events ---\n" << endl;
+		int index = 1;
+		for(const Event &event : events){
+			cout << "Event #" << index++ << "\n"
+				 << "----------------------------\n"
+				 << "Name       : " << event.name << "\n"
+				 << "Date       : " << event.date << "\n"
+				 << "Start Time : " << event.startTime << "\n"
+				 << "End Time   : " << event.endTime << "\n"
+				 << "Description: " << event.description << "\n"
+				 << "----------------------------\n" << endl;
+		}
+	}
+}
+
+// Displays events for a specific date
+void displaySpecificDateEvents(const vector<Event> &events, string date){
+	for(const Event &event : events){
+		if(event.date == date){
+			cout	<< "\n----------------------------\n"
+					<< "Name       : " << event.name << "\n"
+					<< "Date       : " << event.date << "\n"
+					<< "Start Time : " << event.startTime << "\n"
+					<< "End Time   : " << event.endTime << "\n"
+					<< "Description: " << event.description << "\n"
+					<< "----------------------------\n" << endl;
+		}
+	}
+}
+
+// Main function - Handles user interaction
+int main(){
+
+	vector<Event> events; // Stores all events
+	
+	bool exit = false;
+	while(!exit){
+		switch(getMainChoice()){
+			case 1:
+				addEvent(events);
+				break;
+			case 2:
+				displayAllEvents(events);
+				break;
+			case 3:
+				// Get date input & show events for that date
+				if(events.empty()){
+					cout << "\n[ERROR] Your event list is empty.\n" <<endl;
+					continue;
+				}
+				{
+					string date;
+					bool valid;
+					do{
+						cout << "Enter event date (YYYY-MM-DD): ";
+						getline(cin, date);
+						valid = isDateValid(date);
+						if(!valid) cerr << "\n[ERROR] Invalid date format.\n" <<endl;
+					}while(!valid);
+					displaySpecificDateEvents(events, date);
+				}
+				break;
+			case 4:
+				exit = true;
+				cout << "\n--- Exiting Program... ---\n" <<endl;
+				break;
+			default:
+				cerr << "\n[ERROR] Invalid Choice!\n" <<endl;
+				break;
+		}
+	}
+	
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #05
+
+### ABC Weather forcast System
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+const int DAYS_MAX = 7; // Maximum number of forecast days
+
+// Structure to hold weather data
+struct Weather {
+    string day;
+    float temperature;
+    float humidity;
+    string description;
+};
+
+// Function to handle input errors and prevent crashes
+bool inputFailed() {
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear invalid input
+        cerr << "\n[ERROR] Invalid Input!\n";
+        return true;
+    }
+    return false;
+}
+
+// Validates date format: "DD/MM/YYYY"
+bool isValidDate(const string &date) {
+    if (date.length() != 10 || date[2] != '/' || date[5] != '/') return false;
+
+    int day = stoi(date.substr(0, 2));
+    int month = stoi(date.substr(3, 2));
+    int year = stoi(date.substr(6, 4));
+
+    if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31) return false;
+    if (month == 2 && day > 28) return false; // Simplified Feb validation (ignoring leap years)
+
+    return true;
+}
+
+// Prompts and validates a date input
+string getDay() {
+    string day;
+    do {
+        cout << "Enter Day (DD/MM/YYYY): ";
+        getline(cin, day);
+
+        if (!isValidDate(day)) cerr << "\n[ERROR] Invalid date format!\n";
+        else if (day.empty()) cerr << "\n[ERROR] Date cannot be empty!\n";
+
+    } while (!isValidDate(day) || day.empty());
+
+    return day;
+}
+
+// Prompts and validates a temperature input
+float getTemperature() {
+    float temperature;
+    do {
+        cout << "Enter Temperature (in Celsius): ";
+        cin >> temperature;
+        cin.ignore();
+    } while (inputFailed());
+    return temperature;
+}
+
+// Prompts and validates a humidity input
+float getHumidity() {
+    float humidity;
+    do {
+        cout << "Enter Humidity (in percentage): ";
+        cin >> humidity;
+        cin.ignore();
+    } while (inputFailed());
+    return humidity;
+}
+
+// Prompts for weather description (allows empty input)
+string getDescription() {
+    string description;
+    cout << "Enter Description: ";
+    getline(cin, description);
+
+    return description.empty() ? "No Description." : description;
+}
+
+// Collects weather data for the week
+void getWeatherData(Weather weathers[]) {
+    cout << "\n== Enter Weather Data for the Week ==\n" << endl;
+    for (int i = 0; i < DAYS_MAX; i++) {
+        cout << "== Day " << i + 1 << " ==\n";
+        weathers[i].day = getDay();
+        weathers[i].temperature = getTemperature();
+        weathers[i].humidity = getHumidity();
+        weathers[i].description = getDescription();
+        cout << "-------------------------------\n";
+    }
+}
+
+// Displays the weekly weather forecast
+void displayForecast(const Weather weathers[]) {
+    cout << "\n== Weekly Weather Forecast ==\n" << endl;
+    for (int i = 0; i < DAYS_MAX; i++) {
+        cout << "------- Forecast #" << i + 1 << " -------" << endl;
+        cout << "Day         : " << weathers[i].day << "\n"
+             << "Temperature : " << weathers[i].temperature << "°C\n"
+             << "Humidity    : " << weathers[i].humidity << "%\n"
+             << "Description : " << weathers[i].description << "\n"
+             << "-------------------------------\n" << endl;
+    }
+}
+
+int main() {
+    cout << "\n== Welcome to ABC Weather Forecast ==\n" << endl;
+
+    Weather weathers[DAYS_MAX];
+
+    getWeatherData(weathers);  // Collect data
+    displayForecast(weathers); // Display forecast
+
+    return 0;
+}
+```
+
+>![alt text](<Screenshot from 2025-03-13 08-52-09.png>)
 
 
 
