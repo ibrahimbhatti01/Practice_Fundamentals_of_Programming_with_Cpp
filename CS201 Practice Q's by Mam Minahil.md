@@ -5348,6 +5348,238 @@ int main() {
 
 >![alt text](<Screenshot from 2025-03-13 08-52-09.png>)
 
+# !! Bit Maanipulation
+
+## Problem Statement #0.1
+
+### Swap using XOR
+
+```C++
+//Solution
+#include <iostream>
+
+using namespace std;
+
+int main(){
+	unsigned int a, b, c;
+
+	a = 112;
+	b = 32;
+
+//	//We can't do it like this:
+//	a = (a^b)^a //Now, a=32;
+//	b = (b^a)^b //Here b=32;
+
+	//Swap values using exclusive or XOR.
+	a = a^b; //a=80
+	b = b^a; //b=112
+	a = a^b; //a=32
+
+	cout << "a= " << a << endl;
+	cout << "b= " << b;
+
+	return 0;
+}
+```
+
+>![alt text](image-83.png)
+
+## Problem Statement #01
+
+### Left shift of an integer by 1 bit
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main(){
+	int i;
+	
+	cout << "Please enter an integer value for left shift: ";
+	cin >> i;
+	
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input! \n" <<endl;
+		return 0;
+	}
+	
+	//left shift by 1 bit.
+	i =  i << 1;
+	cout << "After left shift by 1 bit i= " <<i <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-84.png)
+
+## Problem Statement #02
+
+### Right shift by 2 bits
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main(){
+	int i;
+	
+	cout << "Please enter an integer value for right shift: ";
+	cin >> i;
+	
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input! \n" <<endl;
+		return 0;
+	}
+	
+	//right shift by 2 bit.
+	i =  i >> 2;
+	cout << "After right shift by 1 bit i= " <<i <<endl;
+	
+
+	return 0;
+}
+```
+
+>![alt text](image-85.png)
+
+## Problem Statement #03
+
+### Bit Toggling(invertion) using Bitwise NOT
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main(){
+	int i;
+	
+	cout << "Please enter an integer value for bit toggling: ";
+	cin >> i;
+	
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input! \n" <<endl;
+		return 0;
+	}
+	
+	//right shift by 2 bit.
+	i =  ~i;
+	cout << "After toggling the bits i= " <<i <<endl;
+	
+
+	return 0;
+}
+```
+
+>![alt text](image-86.png)
+
+## Problem Statement #04
+
+### Set 3rd bit, 0 based indexing.
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main(){
+	unsigned int i;
+	
+	cout << "Please enter an integer: ";
+	cin >> i;
+	
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input! \n" <<endl;
+		return 0;
+	}
+	
+	unsigned int j = 1;
+	//Set 3rd index, mean 4th bit.
+	j= j << 3;
+	
+	i = i | j;
+	
+	cout << "Result after setting the third bit: " << i;
+
+	return 0;
+}
+```
+
+>![alt text](image-87.png)
+
+## Problem Statement #05
+
+### Swap numbers using XOR
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main(){
+	unsigned int a, b;
+	
+	cout << "Please enter first integer: ";
+	cin >> a;
+	
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input! \n" <<endl;
+		return 0;
+	}
+	
+	cout << "Please enter second integer: ";
+	cin >> b;
+
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input! \n" <<endl;
+		return 0;
+	}
+	
+	cout << "\n---Calculating the result..\n" <<endl;
+	
+	a = a^b;
+	b = b^a; //b=b^(a^b) -> b=a
+	a = a^b; //a=(a^b)^b -> a=b
+	
+	cout << "Values after swapping: " <<endl;
+	
+	cout << "First integer: " << a <<endl;
+	cout << "Second integer: " << b <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-88.png)
+
+
+
+
 
 
 
