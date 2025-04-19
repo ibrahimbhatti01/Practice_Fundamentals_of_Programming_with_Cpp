@@ -5442,9 +5442,9 @@ int main(){
 		return 0;
 	}
 	
-	//right shift by 2 bit.
+	//right shift by 2 bit (divides by 4 for unsigned integers).
 	i =  i >> 2;
-	cout << "After right shift by 1 bit i= " <<i <<endl;
+	cout << "After right shift by 2 bit i= " <<i <<endl;
 	
 
 	return 0;
