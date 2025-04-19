@@ -5477,7 +5477,6 @@ int main(){
 		return 0;
 	}
 	
-	//right shift by 2 bit.
 	i =  ~i;
 	cout << "After toggling the bits i= " <<i <<endl;
 	
