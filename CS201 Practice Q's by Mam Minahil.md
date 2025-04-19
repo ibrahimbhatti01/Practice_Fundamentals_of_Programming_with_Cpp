@@ -5577,8 +5577,251 @@ int main(){
 
 >![alt text](image-88.png)
 
+---
+---
+
+# !! Pre-Processor and Macros
+
+## Problem Statement #0.1
+
+### Cross Platform Messages
+
+```C++
+//Solution
+#include <iostream>
+
+#if defined(__linux__)
+	  #define OS "Linux"
+
+#elif defined(__WIN32__)
+	  #define OS "Windows 32"
+	  
+#elif defined(__WIN64__)
+	  #define OS "Windows 64"
+	  
+#elif defined(__APPLE__)
+	  #define OS "Mac"
+	  
+#else
+	  #define OS "UNKNOWN"
+
+#endif
+
+using namespace std;
+
+int main(){
+	
+	cout << "This program is running on " << OS << " operating system.";
+	
+	return 0;
+}
+```
+
+>![alt text](image-89.png)
 
 
+## Problem Statement #0.2
+
+### Cross platform Messages P2
+
+```C++
+//Solution
+#include <iostream>
+
+#ifdef __linux__
+	#define MESSAGE "Linux detected: Enabling Linux-exclusive features..."
+	
+#elif defined(_WIN32) || defined(_WIN64)
+	   #define MESSAGE "Windows detected: Running Windows-specific optimizations..."
+	   
+#elif defined(_APPLE__)
+		 #define MESSAGE "MacOS detected: Loading MacOS enhancements..."
+		 
+#else
+	 #define MESSAGE "Unknown OS: Running in default mode."
+	
+#endif
+
+using namespace std;
+
+int main(){
+	
+	cout << MESSAGE <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-90.png)
+
+## Problem Statement #0.3
+
+### Debug Moding
+
+```C++
+//Solution
+#include <iostream>
+
+#define DEBUG_MODE
+//#undef DEBUG_MODE
+
+#ifdef DEBUG_MODE
+	   #define MODE "Debug mode is ON: Extra logging enabled."
+	   
+#else
+	 #define MODE "Debug mode is OFF: Running normally."
+
+#endif
+
+using namespace std;
+
+int main(){
+	
+	cout << MODE <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-91.png)
+
+## Problem Statement #0.4
+
+### defining and using separate header
+
+```C++
+//Solution
+
+//header file 'math_macros.h'
+#define SQUARE(x) ((x) * (x))
+#define CUBE(x) ((x) * (x) * (x))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+//Actual code using this file
+#include <iostream>
+#include "math_macros.h"
+
+using namespace std;
+
+int main(){
+	
+	cout << SQUARE(5) <<endl;
+	cout << CUBE(5) <<endl;
+	cout << MAX(-1, 1) <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-92.png)
+
+---
+---
+
+# !! Dynamic Memory Allocation
+
+## Problem Statement #0.1
+
+### (int *) calloc(size_t n, size_t el_size)
+
+```C++
+//Solution
+#include <iostream>
+
+using namespace std;
+
+int main(){
+	
+	int *iPtr;
+	
+	iPtr = (int *) calloc(1000, sizeof(int));
+	
+	//Always check if iPtr is null. right after declaring memory.
+	if(iPtr==NULL){
+		cout << "iPtr == NULL" <<endl;
+	}else{
+		cout << "iPtr != NULL" <<endl;
+	}
+	
+	return 0;
+}
+```
+
+>![alt text](image-93.png)
+
+## Problem Statement #0.2
+
+### dynamic memory allocation usiing (int *)malloc(n *(sizeof(int))) 
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+using namespace std;
+
+int main(){
+	
+	int numStd;
+	
+	cout << "Enter number of students: ";
+	cin >> numStd;
+	
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input: Input mudt be an integer.\n" <<endl;
+		return 1;
+	}
+	
+	
+	/*We need a memory area where we can store ages of students as per number of
+	students. We're not gonna use an array, it uses static memory allocation.*/
+
+	/*iPtr to store whole declared memory, and sPtr to iterate on different
+	locations in this memory.*/
+	int *iPtr, *sPtr;
+	
+	
+	iPtr = (int *) malloc(numStd*(sizeof(int)));
+
+	//if memory allocation function fails, it return NULL, so checking for it.
+	if(iPtr == NULL){
+		cerr << "\n[ERROR] Memory allocation fail.\n" <<endl;
+		return 1;
+	}
+	
+	/*A while loop to read ages of students and place them in memory.*/
+	int i=0;
+	while(i < numStd){
+
+		sPtr = iPtr;
+
+		bool failed;
+		do{
+			failed = false;
+			
+			cout << "Enter age of student " << i+1 << ": ";
+			cin >> *sPtr;
+
+			if(cin.fail()){
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cerr << "\n[ERROR] Invalid Input: Input mudt be an integer.\n" <<endl;
+				failed = true;
+			}
+		}while(failed);
+		
+		sPtr++;
+		i++;
+	
+	}
+	
+	return 0;
+}
+```
+
+>
 
 
 
