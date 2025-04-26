@@ -5748,7 +5748,7 @@ int main(){
 
 >![alt text](image-93.png)
 
-## Problem Statement #0.2
+## Problem Statement #0.2 -need to update
 
 ### dynamic memory allocation usiing (int *)malloc(n *(sizeof(int))) 
 
@@ -5815,6 +5815,8 @@ int main(){
 		i++;
 	
 	}
+
+	free(iPtr);
 	
 	return 0;
 }
@@ -5822,7 +5824,108 @@ int main(){
 
 >
 
+## Problem Statement #0.2.1
 
+### find average of students using (int *)malloc(n*(sizeof(int)))
+
+```C++
+//Solution
+#include <iostream>
+#include <limits>
+
+
+using namespace std;
+
+bool inputFailed(){
+ 	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input!\n" <<endl;
+		return true;
+	}
+	return false;
+}
+
+int main(){
+	int numStd;
+	
+	do{
+		cout << "Please enter number of student(s):";
+		cin >> numStd;
+		cout <<endl;
+	}while(inputFailed());
+	
+	//ages is a pointer refering to the start of memory location where
+	//ages of all students will be stored. because malloc() return a pointer.
+	int *ages;
+	
+	ages = (int*) malloc(numStd*sizeof(int));
+	
+	//in case malloc() returned a NULL pointer.
+	if(ages == NULL){
+		cerr << "\n[ERROR] Memory Allocation Failed!\n" <<endl;
+		return 0;
+	}
+	
+	int *iterator = ages; //This would iterate over the memory by incrementing in
+						  //address, to keep the initial address of memory intact.
+	
+	int sum = 0;
+	for(int i=0; i<numStd; i++){
+		do{
+			cout << "Enter age of student " << i+1 << ": ";
+		 	cin >> *iterator;
+		}while(inputFailed());
+		
+		sum += *iterator;
+		
+		//keep moving towards next memory location, to store data in it
+		iterator++;
+	}
+	
+	int average = 0;
+	average = sum / numStd;
+
+	cout << "\nAverage age of " << numStd << " student(s) is: " << average <<endl;
+
+	//very important
+	free(ages);
+	
+	return 0;
+}
+```
+
+>![alt text](image-94.png)
+
+## Problem Statement #0.3
+
+### Maximum heap memory finder
+
+```C++
+//Solution
+#include <iostream>
+using namespace std;
+
+int main(){
+	int *iPtr;
+	size_t size = 10000; //in bytes
+
+//	twice the size until system can't
+	do{
+	   iPtr = (int *) malloc(size);
+
+	   if(iPtr != NULL){
+	   	size *= 2;
+	   }
+	}while(iPtr != NULL);
+	
+	cout << "The size of your system's current heap is " << size <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-95.png)
 
 
 
