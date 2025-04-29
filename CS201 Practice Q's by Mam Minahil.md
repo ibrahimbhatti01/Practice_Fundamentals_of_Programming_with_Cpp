@@ -5927,19 +5927,208 @@ int main(){
 
 >![alt text](image-95.png)
 
+---
+---
 
+# !! Structured Programming
 
+## Problem Statement #0.1
 
-## Problem Statement #0
-
-### 
+### Default Funtion Arguments Test
 
 ```C++
 //Solution
+#include <iostream>
+using namespace std;
+
+void f(int i=1, double x=2){
+	cout << "\ti = " << i <<endl;
+	cout << "\tx = " << x <<endl;
+}
+
+int main(){
+
+	cout << "f(): \n";
+	f();
+	
+	cout << "\nf(2): \n";
+	f(2);
+	
+	cout << "\nf(2, 4): \n";
+	f(2, 4);
+	
+	return 0;
+}
+```
+
+>![alt text](image-96.png)
+
+## Problem Statement #0.2
+
+### inline functions vs MACROS
+
+```C++
+//Solution
+/*It's sometime not good to use macros,
+as here in this prog macros increment in y two times.*/
+#include <iostream>
+using namespace std;
+
+#define MAX(a,b) ((a)>(b)?(a):(b))
+
+inline int f(int a, int b){
+	if(a>b) return a;
+	else return b;
+}
+
+int main(){
+
+	int n, x = 23, y = 24;
+
+	n = MAX(x++, y++);
+	cout << "x = " << x << "y = " << y <<endl;
+	
+	x = 23, y = 24;
+	f(x++, y++);
+	cout << "x = " << x << "y = " << y <<endl;
+
+	return 0;
+}
+```
+
+>![alt text](image-97.png)
+
+## Problem Statement #0.3
+
+### Function Overloading
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+void print(const int &i){
+	cout << "This is an integer = " << i <<endl;
+}
+
+void print(const double &x){
+	cout << "This is a double = " << x <<endl;
+}
+
+void print(const char s[]){
+	cout << "This is a string = '" << s << "'" <<endl;
+}
+
+int main(){
+
+	print(12.21);
+	print(10);
+	char s[] = "Ibrahim";
+	print(s);
+	
+	return 0;
+}
+```
+
+>![alt text](image-98.png)
+
+---
+---
+
+# !! Classes and Objects
+
+## Problem Statement #0.1 -need to update
+
+### Date Class practice
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class Date{
+	public:
+		Date(int day, int month, int year); //constructor
+		void display();
+		void setDay(int);
+		void setMonth(int);
+		void setYear(int);
+		int getDay();
+		int getMonth();
+		int getYear();
+	
+	private:
+		int day;
+		int month;
+		int year;
+};
+
+void Date::display(){
+	cout << day << "/" << month << "/" << year <<endl;
+}
+
+void Date::setDay(int d){
+	day = d;
+}
+
+void Date::setMonth(int m){
+	month = m;
+}
+
+void Date::setYear(int y){
+	year = y;
+}
+
+int Date::getDay(){
+	return day;
+}
+
+int Date::getMonth(){
+	return month;
+}
+
+int Date::getYear(){
+	return year;
+}
+
+
+int main(){
+	Date date1;
+	date1.setDay(10);
+	date1.setMonth(12);
+	date1.setYear(2025);
+	date1.display();
+	
+	cout << "\n" << date1.getDay();
+
+	
+	return 0;
+}
+```
+
+>
+
+
+
+
+
+
+
+
+
+
+## Problem Statement #
+
+###
+
+```C++
+//solution
 
 ```
 
 >
+
+
 
 
 
