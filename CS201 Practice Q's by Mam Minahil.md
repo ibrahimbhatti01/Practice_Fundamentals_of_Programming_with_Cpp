@@ -6108,6 +6108,463 @@ int main(){
 
 >
 
+## Problem Statement #0.2 -need to complete
+
+### Date Class Practice - contd.
+
+```C++
+//solution
+/*A program which takes a date input in different formats, parse
+it and store it using concept of classes and function overloading.*/
+#include <iostream>
+#include <limits>
+#include <cstring>
+using namespace std;
+
+
+class Date{
+	//interface
+	public:
+		Date();
+		void display();
+		
+	//implementation
+	private:
+		int day, month, year;
+};
+
+
+bool inputFailed(){
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid input!\n" <<endl;
+		return true;
+	}
+	return false;
+}
+
+void dateErr(){
+	cerr << "\n[ERROR] Invalid Date Format!\n" <<endl;
+}
+bool dateFormatValid(const string &date){
+	int dateLen = date.length();
+
+	//date length validation
+	if(dateLen != 11 && dateLen != 10){
+		dateErr();
+		return false;
+	}
+	
+	//handling day
+	int day = date.substr(0, 2);
+	if(day < 1 || day > 31){
+		
+	}
+	
+	//handling month in 00-Jan-0000 format
+	if(dateLen == 11){
+		
+		
+
+	}
+	
+	return true;
+}
+
+int main(){
+	
+	string date = "12-Jan-2025";
+	do{
+	   cout << "Please enter the date: ";
+	   cin >> date;
+	}while(inputFailed(), !dateFormatValid(date));
+	
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #0.3
+
+### Date Class, Handling different date formats input with costructor overloading.
+
+```C++
+//solution
+#include <iostream>
+#include <cstdlib>
+#include <limits>
+using namespace std;
+
+// Global flag to track if date is valid (we'll improve this later)
+bool DATEVALID = true;
+
+// Constants for date format lengths
+const int SHORT_DATE_LEN = 10;  // For "DD/MM/YYYY" format
+const int LONG_DATE_LEN = 11;    // For "DD-Mon-YYYY" format (like "01-Jan-2023")
+
+class Date {
+private:
+    // The core date components we need to store
+    int day;     // 1-31
+    int month;   // 1-12
+    int year;    // Any reasonable year
+
+    // Private helper - converts "Jan" to 1, "Feb" to 2 etc.
+    int monthToNumber(string month);
+
+public:
+    // Different ways to create a Date:
+    Date();                     // Default constructor - makes empty date
+    Date(int d, int m, int y);  // From numbers (1, 1, 2023)
+    Date(string date);          // From string ("01-Jan-2023" or "01/01/2023")
+    ~Date();                    // Destructor - runs when Date is destroyed
+
+    // Basic setters and getters
+    void setDay(int d);
+    void setMonth(int m);
+    void setYear(int y);
+    int getDay();
+    int getMonth();
+    int getYear();
+
+    // Display the date nicely
+    void display();
+};
+
+/* ----------------------------
+   Constructor Implementations
+   ---------------------------- */
+
+// Default constructor - creates an empty date
+Date::Date() {
+    day = 0;
+    month = 0;
+    year = 0;
+}
+
+// Constructor from numbers (day, month, year)
+Date::Date(int d, int m, int y) {
+    // Start with empty date
+    day = 0;
+    month = 0;
+    year = 0;
+
+    // Try setting each part (stops if any part fails)
+    setDay(d);
+    if(DATEVALID) setMonth(m);
+    if(DATEVALID) setYear(y);
+}
+
+// Constructor from string (handles two formats)
+Date::Date(string date) {
+    // Start with empty date
+    day = 0;
+    month = 0;
+    year = 0;
+
+    int len = date.length();
+
+    // Check which format we're dealing with
+    if(len == LONG_DATE_LEN) {  // "DD-Mon-YYYY" format
+        // Extract day (first 2 characters)
+        int d = stoi(date.substr(0, 2));
+        setDay(d);
+
+        if(DATEVALID) {
+            // Extract month name (3 letters after '-')
+            string monthName = date.substr(3, 3);
+            setMonth(monthToNumber(monthName));
+        }
+
+        if(DATEVALID) {
+            // Extract year (last 4 characters)
+            int y = stoi(date.substr(7, 4));
+            setYear(y);
+        }
+    }
+    else if(len == SHORT_DATE_LEN) {  // "DD/MM/YYYY" format
+        // Extract day, month, year from fixed positions
+        int d = stoi(date.substr(0, 2));
+        setDay(d);
+
+        if(DATEVALID) {
+            int m = stoi(date.substr(3, 2));
+            setMonth(m);
+        }
+
+        if(DATEVALID) {
+            int y = stoi(date.substr(6, 4));
+            setYear(y);
+        }
+    }
+    else {
+        cerr << "\n[ERROR] Invalid Date Format\n" << endl;
+    }
+}
+
+// Destructor - called automatically when Date object is destroyed
+Date::~Date() {
+    // Just showing when this happens (not needed in real code)
+    cout << "\nDestructor Called\n" << endl;
+}
+
+/* ----------------------------
+   Setter Methods (with validation)
+   ---------------------------- */
+
+void Date::setDay(int d) {
+    if(d >= 1 && d <=31) {  // Basic day validation
+        day = d;
+    } else {
+        DATEVALID = false;  // Mark date as invalid
+        cerr << "\n[ERROR] Day is Invalid\n" << endl;
+    }
+}
+
+void Date::setMonth(int m) {
+    if(m >= 1 && m <= 12) {  // Basic month validation
+        month = m;
+    } else {
+        DATEVALID = false;
+        day = 0;  // Reset day since date is now invalid
+        cerr << "\n[ERROR] Month is Invalid\n" << endl;
+    }
+}
+
+void Date::setYear(int y) {
+    if(y >= 1 && y <= 2100) {  // Reasonable year range
+        year = y;
+    } else {
+        DATEVALID = false;
+        day = 0;     // Reset components
+        month = 0;   // since date is now invalid
+        cerr << "\n[ERROR] Year is Invalid\n" << endl;  
+    }
+}
+
+/* ----------------------------
+   Getter Methods
+   ---------------------------- */
+
+int Date::getDay() { return day; }
+int Date::getMonth() { return month; }
+int Date::getYear() { return year; }
+
+/* ----------------------------
+   Display Method
+   ---------------------------- */
+
+void Date::display() {
+    cout << "Date: " << getDay() << "/" << getMonth() << "/" << getYear() << endl;
+}
+
+/* ----------------------------
+   Helper Method Implementation
+   ---------------------------- */
+
+// Converts month names to numbers (e.g. "Jan" ? 1)
+int Date::monthToNumber(string month) {
+    int m = 0;  // Default to 0 (invalid)
+
+    // Array of month abbreviations
+    const char *months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+    // Check each month name
+    for(int i = 0; i < 12; i++) {
+        if(month == months[i]) {
+            m = i + 1;  // Found it! (array starts at 0, months at 1)
+            return m;
+        }
+    }
+    return m;  // Return 0 if not found
+}
+
+/* ----------------------------
+   Utility Function
+   ---------------------------- */
+
+// Checks if cin failed and clears errors
+bool inputFailed() {
+    if(cin.fail()) {
+        cin.clear();  // Reset error flags
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Clear bad input
+        cerr << "\n[ERROR] Invalid Input!\n" << endl;
+        return true;
+    }
+    return false;
+}
+
+/* ----------------------------
+   Main Program
+   ---------------------------- */
+
+int main() {
+    string date;
+
+    // Keep asking for date until we get valid input
+    do {
+        cout << "\nPlease enter date (DD-Mon-YYYY or DD/MM/YYYY): ";
+        cin >> date;
+    } while(inputFailed());
+
+    // Create Date object from the input string
+    Date date1(date);
+
+    // Show the parsed date
+    date1.display();
+
+    return 0;
+}
+```
+
+>
+
+## Problem Statement #01 - need to update
+
+### Student Class
+
+```C++
+//solution
+#include <iostream>
+#include <limits>
+using namespace std;
+
+class Student{
+	private:
+		string name;
+		int rollNumber;
+		float eng, urdu, math;
+		
+	public:
+		Student(string name, int rollNumber, float eng, float urdu, float math);
+		void display();
+		float totalMarks();
+};
+
+Student::Student(string sName, int sRollNumber, float sEng=0, float sUrdu=0, float sMath=0){
+	name = sName;
+	rollNumber = sRollNumber;
+	eng = sEng;
+	urdu = sUrdu;
+	math = sMath;
+}
+
+float Student::totalMarks(){
+	return eng + urdu + math;
+}
+
+void Student::display(){
+	cout << "\nStudent Information"
+		 << "\nName: " << name
+		 << "\nRoll Number: " << rollNumber
+		 << "\nMarks in English: " << eng
+		 << "\nMarks in Urdu: " << urdu
+		 << "\nMarks in Math: " << math
+		 << "\nTotal Marks: " << totalMarks() <<endl;
+}
+
+bool inputFailed(){
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input!\n" <<endl;
+		return true;
+	}
+	return false;
+}
+
+int main(){
+	
+	string name;
+	int rollNumber;
+	float eng, urdu, math;
+	
+	do{
+		cout << "Please enter name: ";
+		cin >> name;
+	}while(inputFailed());
+	
+	do{
+		cout << "Please enter Roll Number: ";
+		cin >> rollNumber;
+	}while(inputFailed());
+	
+	do{
+		cout << "Please enter Marks in English: ";
+		cin >> eng;
+	}while(inputFailed());
+	
+	do{
+		cout << "Please enter Marks in Urdu: ";
+		cin >> urdu;
+	}while(inputFailed());
+	
+	do{
+		cout << "Please enter marks in Math: ";
+		cin >> math;
+	}while(inputFailed());
+	
+	Student student1(name, rollNumber, eng, urdu, math);
+	
+	student1.display();
+	
+	return 0;
+}
+```
+
+>![alt text](image-99.png)
+
+## Problem Statement #02 - need to complete.
+
+### BankAccount Class - contd.
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class BankAccount{
+	private:
+		int accountNumber;
+		float balance;
+		
+	public:
+		deposit(float amount);
+		withdraw(float amount);
+};
+
+bool inputFailed(){
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] Invalid Input!\n" <<endl;
+		return true;
+	}
+	return false;
+}
+
+int main(){
+	
+	int accNumber
+	do{
+		cout << "Please enter your account number: ";
+		cin >> accNumber;
+	}while(inputFailed());
+	
+	
+	switch(choice){
+		
+	}
+	
+	
+	return 0;
+}
+```
+
+>
 
 
 
@@ -6116,8 +6573,7 @@ int main(){
 
 
 
-
-## Problem Statement #
+## Problem Statement #0
 
 ###
 
@@ -6127,8 +6583,6 @@ int main(){
 ```
 
 >
-
-
 
 
 
