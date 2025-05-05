@@ -6564,9 +6564,273 @@ int main(){
 }
 ```
 
+> 
+
+## Problem Statement #0.4
+
+### Friend function
+
+```C++
+//solution
+//implemented a friend function of a class
+//to modify it's private data member.
+#include <iostream>
+using namespace std;
+
+class myClass{
+	friend void increment(myClass &, int); //take an object and increment it's private data member
+	
+	private:
+		int topSecret;
+		
+	public:
+		myClass(){ //initialize the object, while creation
+			topSecret = 100;
+		}
+		void display(){
+			cout << "The value of topSecret is: " << topSecret << endl;
+		}
+};
+
+//definition of friend function
+void increment(myClass &A, int i){
+	A.topSecret += i;
+}
+
+int main(){
+
+	myClass x;
+	
+	x.display();
+	
+	increment(x, 50);
+	
+	x.display();
+
+	return 0;
+}
+```
+
 >
 
+## Problem Statement #0.4.1
 
+### Mutual Friend Function in two classes
+
+```C++
+//solution
+/*Tried to add two private members of a class
+using their mutual friend, XD. How crazy hahhh*/
+#include <iostream>
+using namespace std;
+
+class myClass2; //prototype/declaration
+class myClass1{
+	friend void addBoth(myClass1, myClass2);
+	
+	private:
+		int topSecret;
+		
+	public:
+		myClass1(){ //initialize the object, while creation
+			topSecret = 100;
+		}
+		void display(){
+			cout << "The value of topSecret is: " << topSecret << endl;
+		}
+};
+
+class myClass2{
+	friend void addBoth(myClass1, myClass2);
+	
+	private:
+		int topSecret;
+
+	public:
+		myClass2(){ //initialize the object, while creation
+			topSecret = 200;
+		}
+		void display(){
+			cout << "The value of topSecret is: " << topSecret << endl;
+		}
+};
+
+//definition of friend function
+void addBoth(myClass1 X, myClass2 Y){
+	cout << "The addition of topSecret is: " << X.topSecret + Y.topSecret <<endl;
+}
+
+int main(){
+
+	myClass1 A;
+	myClass2 B;
+	
+	A.display();
+	B.display();
+	
+	addBoth(A, B);
+
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #0.5
+
+### Friend classes
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class myClass2; //prototype/declaration
+class myClass1{
+	friend myClass2;
+	
+	private:
+		int topSecret;
+		
+	public:
+		myClass1(){ //initialize the object, while creation
+			topSecret = 100;
+		}
+};
+
+class myClass2{
+	friend myClass1;
+	
+	private:
+		int topSecret;
+
+	public:
+		myClass2(){ //initialize the object, while creation
+			topSecret = 200;
+		}
+};
+
+
+int main(){
+
+
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #0.6
+
+### Operator Overloading
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class Complex{
+//	friend Complex operator+(); //incase, addition of a double and a complex
+
+	private:
+	  double real;
+	  double imag;
+
+	public:
+		Complex(double x=0, double y=0){
+			real = x;
+			imag = y;
+		}
+		void display(){
+			cout << real << " + " << imag << "i\n" <<endl;
+		}
+		Complex operator+(const Complex &c); //incase, addidtion of two complex numbers
+		Complex operator+(const double &d); //incase, addition of a complex and a double
+		Complex operator+=(const Complex &c);
+};
+
+Complex Complex::operator+(const Complex &c){
+	Complex temp;
+	temp.real = real + c.real;
+	temp.imag = imag + c.imag;
+	return temp;
+}
+
+Complex Complex::operator+(const double &d){
+	Complex temp;
+	temp.real = real + d;
+	temp.imag = imag;
+	return temp;
+}
+
+Complex Complex::operator+=(const Complex &c){
+	real += c.real;
+	imag += c.imag;
+}
+
+int main(){
+
+	Complex c1(1, 2), c2(3, 4), c3;
+
+	c3 = c1 + c2;
+
+	c1.display();
+	c2.display();
+	c3.display();
+
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #0.7
+
+### + Operator overloading for strings
+
+```C++
+//solution
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class String{
+	private:
+		char s[30];
+	public:
+		String(const char c[]=""){ //Constructor
+			strcpy(s, c);
+		}
+
+		String operator+(const String &t); //operator overloading function
+		void display(){
+			cout << s <<endl;
+		}
+};
+
+String String::operator+(const String &t){
+	String temp;
+	strcpy(temp.s, ""); //initializing it to a null string
+	strcat(temp.s, s);
+	strcat(temp.s, t.s);
+	return temp;
+}
+
+int main(){
+
+	String s1("Ibrahim"), s2(" bhatti"), s3;
+	
+	s3 = s1 + s2;
+	
+	s1.display();
+	s2.display();
+	s3.display();
+
+	return 0;
+}
+```
+
+>
 
 
 
