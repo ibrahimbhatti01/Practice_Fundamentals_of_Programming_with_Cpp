@@ -279,6 +279,51 @@ int main()
 
 >![alt text](image-9.png)
 
+## Problem Statement #0.1
+
+### Given a four-digit integer, separate and print digits on the screen.
+
+```C++
+// Refined Program Solution
+#include <iostream>
+
+main()
+{
+	  int number;
+	  
+	  std::cout << "Please enter a 4-digit number: ";
+	  std::cin >> number;
+	  
+	  int digit;
+	  digit = number % 10;
+	  
+	  std::cout << "digit = " << digit << std::endl;
+	  
+	  
+	  number = number / 10;
+	  
+	  digit = number % 10;
+
+	  std::cout << "digit = " << digit << std::endl;
+
+
+	  number = number / 10;
+
+	  digit = number % 10;
+
+	  std::cout << "digit = " << digit << std::endl;
+	  
+	  
+	  number = number / 10;
+
+	  digit = number % 10;
+
+	  std::cout << "digit = " << digit << std::endl;
+
+	  return 0;
+}
+```
+
 ---
 
 # !! If-else / Switch Statements
