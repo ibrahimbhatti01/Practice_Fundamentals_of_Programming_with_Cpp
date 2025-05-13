@@ -7064,6 +7064,152 @@ int main() {
 
 >![alt text](image-100.png)
 
+## Problem Statement #04
+
+### Employee Class and it's attributes
+
+```C++
+//solution
+/*This program is used to manage employee
+information, including name, ID and salary*/
+
+#include <iostream>
+#include <limits>
+using namespace std;
+
+class Employee{
+	private:
+		string name;
+		int id;
+		double salary;
+		
+	public:
+		Employee(string name, int id, double salary);
+		
+		//Getter Functions to retrieve data
+		string getName(){return name;}
+		int getId(){return id;}
+		double getSalary(){return salary;}
+		
+		//Setter Functions to store data
+		void setName(const string &newName);
+		void setId(const int &newId);
+		void setSalary(const double &newSalary);
+		
+		//Take validated input for employee details
+		void inputDetails();
+		
+		//Diplay employees info
+		void displayInfo();
+};
+
+bool inputFailed(const string &message){
+	if(cin.fail()){
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cerr << "\n[ERROR] " << message << "\n" <<endl;
+		return true;
+	}else{
+		return false;
+	}
+}
+bool invalidName(const string &name){
+	 if(name.empty()){
+	 	cerr << "\n[ERROR] Name cannot be empty.";
+	 	return true;
+	 }
+	 return false;
+}
+bool invalidId(const int &id){
+	if(id < 0){
+		cerr << "\n[ERROR] Id must be positive.";
+		return true;
+	}else{
+		return false;
+	}
+}
+bool invalidSal(const double &salary){
+	if(salary < 0.0){
+		cerr << "\n[ERROR] Salary cannot be less than 0.";
+		return true;
+	}else{
+		return false;
+	}
+}
+
+//Constructor
+Employee::Employee(string newName="", int newId=0, double newSalary=0.0){
+	if(newName=="" && newId==0 && newSalary==0.0){
+		name = newName;
+		id = newId;
+		salary = newSalary;
+	}else{
+		setName(newName);
+		setId(newId);
+		setSalary(newSalary);
+	}
+}
+
+void Employee::setName(const string &newName){
+	if(invalidName(newName)) exit(1);
+	name = newName;
+}
+void Employee::setId(const int &newId){
+	if(invalidId(newId)) exit(1);
+	id = newId;
+}
+void Employee::setSalary(const double &newSalary){
+	if(invalidSal(newSalary)) exit(1);
+	salary = newSalary;
+}
+
+void Employee::inputDetails(){
+	string newName;
+	do{
+		cout << "Enter name: ";
+		getline(cin, newName);
+	}while(inputFailed("Please enter valid name."));
+	setName(newName);
+	
+	int newId;
+	do{
+		cout << "Enter ID: ";
+		cin >> newId;
+	}while(inputFailed("Please enter valid ID."));
+	setId(newId);
+	
+	double newSalary;
+	do{
+		cout << "Enter salary: ";
+		cin >> newSalary;
+	}while(inputFailed("Please enter valid salary.") || invalidSal(newSalary));
+	setSalary(newSalary);
+}
+
+void Employee::displayInfo(){
+	cout << "\nEmployee Information" <<endl
+		 << "Name: " << name <<endl
+		 << "ID: " << id <<endl
+		 << "Salary: " << salary << "\n" <<endl;
+}
+
+int main(){
+	
+	Employee E1;
+	
+	E1.displayInfo();
+	
+	E1.inputDetails();
+	
+	E1.displayInfo();
+	
+	return 0;
+}
+```
+
+>![alt text](image-101.png)
+
+
 
 
 
