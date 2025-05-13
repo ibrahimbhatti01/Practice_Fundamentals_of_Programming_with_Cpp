@@ -6564,47 +6564,127 @@ int main(){
 
 ## Problem Statement #02 - need to complete.
 
-### BankAccount Class - contd.
+### BankAccount Class - can be updated
 
 ```C++
 //solution
 #include <iostream>
+#include <cstdlib> // For exit(1)
 using namespace std;
 
-class BankAccount{
-	private:
-		int accountNumber;
-		float balance;
-		
-	public:
-		deposit(float amount);
-		withdraw(float amount);
+// BankAccount class manages deposit, withdrawal, and balance tracking
+class BankAccount {
+private:
+	int accountNumber;   // 8-digit account number
+	float balance;       // Current account balance
+
+	// Validates if the amount is positive
+	bool validAmount(const float &amount);
+
+	// Validates if the account number is exactly 8 digits
+	bool validAccount(const int &accNum);
+
+public:
+	// Constructor initializes account with validation
+	BankAccount(int accNum, float bal = 0.0) {
+		if (validAmount(bal) && validAccount(accNum)) {
+			accountNumber = accNum;
+			balance = bal;
+		} else {
+			cerr << "\n[ERROR] Invalid data provided. Program is terminating..\n";
+			exit(1); // Terminate if invalid data is provided
+		}
+	}
+
+	// Deposit money if amount is valid
+	void deposit(float amount);
+
+	// Withdraw money if amount is valid and sufficient balance exists
+	void withdraw(float amount);
+
+	// Display account information
+	void display();
+
+	// Setter functions
+	void setAcc(int accNum);
+	void setBal(float bal);
+
+	// Getter functions
+	int getAcc() { return accountNumber; }
+	float getBal() { return balance; }
 };
 
-bool inputFailed(){
-	if(cin.fail()){
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cerr << "\n[ERROR] Invalid Input!\n" <<endl;
-		return true;
+// Validates positive amount (greater than 0)
+bool BankAccount::validAmount(const float &amount) {
+	if (amount < 1) {
+		cerr << "\n[ERROR] Amount must be greater than 0.\n" << endl;
+		return false;
 	}
-	return false;
+	return true;
 }
 
-int main(){
-	
-	int accNumber
-	do{
-		cout << "Please enter your account number: ";
-		cin >> accNumber;
-	}while(inputFailed());
-	
-	
-	switch(choice){
-		
+// Validates that the account number is exactly 8 digits
+bool BankAccount::validAccount(const int &accNum) {
+	if (accNum < 10000000 || accNum > 99999999) {
+		cerr << "\n[ERROR] Account number must contain 8 digits.\n";
+		return false;
 	}
-	
-	
+	return true;
+}
+
+// Deposits a valid amount into account
+void BankAccount::deposit(float amount) {
+	if (validAmount(amount)) {
+		balance += amount;
+		cout << "\n" << accountNumber << " has been deposited successfully.\n"
+			 << "Your current balance is: " << balance << endl;
+	}
+}
+
+// Withdraws a valid amount if sufficient balance is available
+void BankAccount::withdraw(float amount) {
+	if (validAmount(amount)) {
+		if (amount > balance) {
+			cerr << "\n[ERROR] Insufficient account balance\n" << endl;
+		} else {
+			balance -= amount;
+			cout << "\nRs." << amount << " has been successfully withdrawn from: " << accountNumber << "\n"
+				 << "Your current balance is: " << balance << endl;
+		}
+	}
+}
+
+// Prints account number and current balance
+void BankAccount::display() {
+	cout << "\n-----------------------------" << endl
+		 << "Account Number: " << accountNumber << endl
+		 << "Balance: " << balance << endl
+		 << "-----------------------------\n" << endl;
+}
+
+// Sets account number after validation
+void BankAccount::setAcc(int accNum) {
+	if (validAccount(accNum)) {
+		accountNumber = accNum;
+	}
+}
+
+// Sets balance after validation
+void BankAccount::setBal(float bal) {
+	if (validAmount(bal)) {
+		balance = bal;
+	}
+}
+
+// Main function to test the BankAccount class
+int main() {
+	// Creating a valid account object
+	BankAccount Ali(12345678, 15000);
+
+	Ali.deposit(5000);     // Deposit operation
+	Ali.withdraw(10000);   // Withdrawal operation
+	Ali.display();         // Display account details
+
 	return 0;
 }
 ```
@@ -6877,7 +6957,112 @@ int main(){
 
 >
 
+## Problem Statement #03
 
+### Rectangle Class and it's atrributes calculations
+
+```C++
+//solution
+/* 
+   A C++ program to perform geometric calculations on rectangles,
+   including validation, area, and perimeter computation.
+*/
+
+#include <iostream>
+#include <cstdlib> // for exit()
+using namespace std;
+
+class Rectangle {
+private:
+	float length;
+	float width;
+
+	// Validates that a dimension is non-negative
+	bool isValidDimension(const float &value, string name);
+
+public:
+	// Constructor initializes and validates dimensions
+	Rectangle(float len = 0.0, float wid = 0.0) {
+		if (isValidDimension(len, "length") && isValidDimension(wid, "width")) {
+			length = len;
+			width = wid;
+		} else {
+			cerr << "[ERROR] Program Terminating...\n" << endl;
+			exit(1);
+		}
+	}
+
+	// Setters for length and width (with validation)
+	void setLength(const float &len);
+	void setWidth(const float &wid);
+
+	// Getters to retrieve private member values
+	float getLength() { return length; }
+	float getWidth() { return width; }
+
+	// Computes area using formula: length * width
+	float calculateArea();
+
+	// Computes perimeter using formula: 2 * (length + width)
+	float calculatePerimeter();
+
+	// Displays rectangle properties
+	void display();
+};
+
+// Checks if a dimension is valid (non-negative)
+bool Rectangle::isValidDimension(const float &value, string name) {
+	if (value < 0) {
+		cerr << "\n[ERROR] Invalid " << name << " input.\n" << endl;
+		return false;
+	}
+	return true;
+}
+
+// Assigns validated length
+void Rectangle::setLength(const float &len) {
+	if (isValidDimension(len, "length")) {
+		length = len;
+	}
+}
+
+// Assigns validated width
+void Rectangle::setWidth(const float &wid) {
+	if (isValidDimension(wid, "width")) {
+		width = wid;
+	}
+}
+
+// Returns area
+float Rectangle::calculateArea() {
+	return length * width;
+}
+
+// Returns perimeter
+float Rectangle::calculatePerimeter() {
+	return 2 * (length + width);
+}
+
+// Outputs rectangle details
+void Rectangle::display() {
+	cout << "\nRectangle Details" << endl
+		 << "Length: " << length << endl
+		 << "Width: " << width << endl
+		 << "Area: " << calculateArea() << endl
+		 << "Perimeter: " << calculatePerimeter() << endl;
+}
+
+int main() {
+	// Create a rectangle object and display its properties
+	Rectangle R1(5, 3);
+	R1.display();
+
+	return 0;
+}
+
+```
+
+>![alt text](image-100.png)
 
 
 
