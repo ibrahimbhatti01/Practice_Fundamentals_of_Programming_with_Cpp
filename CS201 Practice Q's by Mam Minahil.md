@@ -7209,6 +7209,132 @@ int main(){
 
 >![alt text](image-101.png)
 
+## Problem Statement #05
+
+### TemperatureConverter Class
+
+```C++
+//solution
+/*This program will convert tempurature between celcius
+and fahremheit using classes and objects.*/
+
+#include <iostream>
+using namespace std;
+
+class TemperatureConverter{
+	private:
+		float celcius;
+		float fahrenheit;
+		
+	public:
+		TemperatureConverter(float newCel, float newFah);
+
+		//Getter functions to retrieve data
+		float getCel(){return celcius;}
+		float getFah(){return fahrenheit;}
+		
+		//Setter functions to set/store validated data
+		void setCel(const float newCel);
+		void setFah(const float newFah);
+		
+		//Conversion functions
+		float celToFah(const float newCel);
+		float FahToCel(const float newFah);
+		
+		void displayConversion(const float newCel, const float newFah);
+};
+
+TemperatureConverter::TemperatureConverter(float newCel=0.0, float newFah=0.0){
+	setCel(newCel);
+	setFah(newFah);
+}
+
+void TemperatureConverter::setCel(const float newCel){
+	celcius = newCel;
+}
+void TemperatureConverter::setFah(const float newFah){
+	fahrenheit = newFah;
+}
+
+float TemperatureConverter::celToFah(const float newCel){
+	return ((newCel*9/5)+32); //return temperature in fahrenheit.
+}
+float TemperatureConverter::FahToCel(const float newFah){
+	return ((newFah-32)*5/9); //return temperature in fahrenheit.
+}
+
+void TemperatureConverter::displayConversion(const float newCel, const float newFah){
+	cout << "\nCelcius: " << newCel << "°C --> " << "Fahrenheit: " << celToFah(newCel) <<"°F"<<endl
+		 << "Fahreheit: " << newFah << "°F --> " << "Celcius: " << FahToCel(newFah) << "°C\n" <<endl;
+}
+
+int main(){
+	
+	TemperatureConverter T1;
+
+	T1.displayConversion(30, 86);
+	
+//	cout << T1.getCel() <<endl;
+//	cout << T1.getFah();
+
+
+	return 0;
+}
+```
+
+>![alt text](image-102.png)
+
+## Problem Statement #05.1
+
+### TemperatureConverter Class updated
+
+```C++
+//solution
+/*
+Temperature Conversion Program
+- Converts between Celsius and Fahrenheit
+- Uses class methods for clean conversion logic
+*/
+
+#include <iostream>
+using namespace std;
+
+class TemperatureConverter {
+public:
+	
+    // Conversion functions (made static since they don't need object state)
+    
+    static float celsiusToFahrenheit(float celsius);
+    static float fahrenheitToCelsius(float fahrenheit);
+
+    // Display function
+    static void displayConversion(float celsius, float fahrenheit);
+};
+
+float TemperatureConverter::celsiusToFahrenheit(float celsius) {
+        return (celsius * 9/5) + 32;
+    }
+float TemperatureConverter::fahrenheitToCelsius(float fahrenheit) {
+        return (fahrenheit - 32) * 5/9;
+    }
+    
+void TemperatureConverter::displayConversion(float celsius, float fahrenheit) {
+        cout << "\nTemperature Conversions:\n"
+             << celsius << "°C = " << celsiusToFahrenheit(celsius) << "°F\n"
+             << fahrenheit << "°F = " << fahrenheitToCelsius(fahrenheit) << "°C\n";
+    }
+
+int main() {
+    // Demonstrate conversion
+    TemperatureConverter::displayConversion(30, 86);
+    
+    return 0;
+}
+```
+
+>![alt text](image-103.png)
+
+
 
 
 
