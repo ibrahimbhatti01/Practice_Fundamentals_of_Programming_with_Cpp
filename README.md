@@ -6,6 +6,8 @@ It includes:
 
 - ✅ Solved practice questions (Markdown file)
 - 📸 Screenshots of solutions on CLI
+  
+  ---
 
 - Link to the Playlist: [click here](https://youtu.be/V651D2t_X0Q?si=AQ6N5O9Skc-b0_xA)
 - 💡 Topics covered:
