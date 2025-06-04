@@ -6562,7 +6562,7 @@ int main(){
 
 >![alt text](image-99.png)
 
-## Problem Statement #02 - need to complete.
+## Problem Statement #02
 
 ### BankAccount Class - can be updated
 
@@ -7334,7 +7334,124 @@ int main() {
 
 >![alt text](image-103.png)
 
+# !! Stream Manipulation
 
+## Problem Statement #0.1
+
+###
+
+```C++
+//solution
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main(){
+	
+	int i = 10;
+	
+	cout << oct << i <<endl;
+	cout << hex << i <<endl;
+	cout << dec << i <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-104.png)
+
+## Problem Statement #0.2
+
+###
+
+```C++
+//solution
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main(){
+	
+	int i = 4000;
+	
+	cout << setfill('*') << setw(10) << i <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-105.png)
+
+## Problem Statement #0.3
+
+###
+
+```C++
+//solution
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main(){
+	
+	int x = 77;
+	
+	cout.setf(ios::showbase);
+	cout.setf(ios::dec, ios::basefield);
+	cout << x <<endl;
+	
+	cout.setf(ios::oct, ios::basefield);
+	cout << x <<endl;
+	
+	cout.setf(ios::hex, ios::basefield);
+	cout << x <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-109.png)
+
+## Problem Statement #0.4
+
+###
+
+```C++
+//solution
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main(){
+	
+	int matrix[3][3];
+	
+	for(int i=0; i<3; i++){
+		for(int j=0; j<3; j++){
+			matrix[i][j]=i*i;
+		}
+	}
+	
+	for(int i=0; i<3; i++){
+		cout << '|';
+		cout.width(10);
+		for(int j=0; j<3; j++){
+			cout.width(3);
+			cout << matrix[i][j];
+		}
+		cout.width(3);
+		cout << '|' <<endl;
+	}
+	
+	return 0;
+}
+```
+
+>![alt text](image-110.png)
 
 
 
@@ -7356,7 +7473,7 @@ int main() {
 
 # !! Cheats
 
-## #0 Pointers | Arrays
+## #01 Pointers | Arrays
 
 >![alt text](image-68.png)
 
@@ -7364,9 +7481,17 @@ int main() {
 
 >![alt text](image-73.png)
 
-## #0 String Search Functions `<cstring>`
+## #02 String Search Functions `<cstring>`
 
 >![alt text](image-67.png)
+
+## #3 Stream Manipulations
+
+>![alt text](image-106.png)
+
+>![alt text](image-107.png)
+
+>![alt text](image-108.png)
 
 # !! Some Motiv.. Sh*ts xD
 
