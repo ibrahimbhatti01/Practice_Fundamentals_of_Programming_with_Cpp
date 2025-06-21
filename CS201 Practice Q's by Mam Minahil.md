@@ -7600,6 +7600,166 @@ int main(){
 
 >![alt text](image-112.png)
 
+---
+---
+
+# !! User Defined Manipulators / Static Keyword
+
+## Problem Statement #0.1
+
+### userDefined Manipulators
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+//tab
+ostream& tab(ostream& output){
+	return output << "\t";
+}
+
+//bell
+ostream& bell(ostream& output){
+	return output << "\a";
+}
+
+//endLine
+ostream& endLine(ostream& output){
+	return output << "\n" << flush;
+}
+
+int main(){
+	cout << "Virtual" << tab << "University" << bell << endLine;//use of user defined manipulators
+	return 0;
+}
+```
+
+>![alt text](image-113.png)
+
+## Problem Statement #0.2
+
+### Static keyword
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+void f(){
+	//initialization will be just for once in it's lifetime during this program.
+	//And it has a function scope.
+ 	static	int i=0; //ccompare the output now, by removing 'static'
+	i++;
+	cout << "Value of i inside function is: " << i <<endl;
+}
+
+int main(){
+
+	for(int i=0; i<10; i++){
+		f();
+	}
+	
+	return 0;
+}
+```
+
+>![alt text](image-114.png)
+
+## Problem Statement #0.3
+
+### Static objects of User-Defined variables(classes)
+
+```C++
+//solution
+/*This example shows the order of construction and destruction of objects
+Emphasing on the exceptional order of when will be the static object get destroyed*/
+#include <iostream>
+using namespace std;
+
+class Truck{
+	private:
+		char name;
+		string scope;
+		
+	public:
+		Truck(char c, string s){
+			name = c;
+			scope = s;
+			cout << "Inside constructor for object " << name << ".  Scope: "<< scope << endl;
+		};
+		~Truck(){
+			cout << "Inside destructor for object " << name << ".  Scope: "<< scope <<endl;
+		}
+};
+
+//Global Object
+Truck a('A', "Global");
+
+void f(){
+	Truck c('C', "Ordinary Function Scope");
+}
+
+void g(){
+	static Truck d('D', "Static Inside Function");
+}
+
+int main(){
+	Truck b('B', "Inside Main");
+	
+	f();
+	g();
+	
+	cout << "\nInside main, Function g has been called.\n" <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-115.png)
+
+## Problem Statement #0.4
+
+### Static members inside class and their usage
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class Student{
+	private:
+	
+	public:
+		static int howMany;
+		Student(){
+			howMany++;
+		};
+		~Student(){
+			howMany--;
+		};
+		
+		void displayHowMany(){
+			cout << "Total number of students are " << howMany <<endl;
+		}
+};
+
+int Student::howMany = 0;
+
+int main(){
+	
+	Student a,b,c,d,e,f;
+	
+	a.displayHowMany();
+	
+	return 0;
+}
+```
+
+>![alt text](image-116.png)
+
+
+
 
 
 
