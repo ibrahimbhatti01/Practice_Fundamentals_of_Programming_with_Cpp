@@ -6909,6 +6909,64 @@ int main(){
 
 >
 
+## Problem Statement #0.6.1
+
+### Stream Insertion "<<" operator overloading for complex class
+
+```C++
+#include <iostream>
+using namespace std;
+
+class Complex{
+	friend ostream& operator<<(ostream& output,const Complex& C);
+	
+	private:
+		int real;
+		int imag;
+		
+	public:
+		//class constructor
+		Complex(int real, int imag);
+		
+		//getter functions to retrieve & return values
+		int getReal()const{
+			return real;
+		};
+		int getImag()const{
+			return imag;
+		};
+		
+		//setter functions to receive and set values
+		void setReal(const int &realNum){
+			real = realNum;
+		};
+		void setImag(const int &imagNum){
+			imag = imagNum;
+		};
+};
+
+Complex::Complex(int real=0, int imag=0){
+	setReal(real);
+	setImag(imag);
+}
+
+ostream& operator<<(ostream& output,const Complex& C){
+	output << C.real << " + " << C.imag << "i" <<endl;
+	return output;
+}
+
+
+int main(){
+
+	Complex c(3, 4);
+	cout << c;
+
+	return 0;
+}
+```
+
+>![alt text](image-111.png)
+
 ## Problem Statement #0.7
 
 ### + Operator overloading for strings
@@ -7452,6 +7510,95 @@ int main(){
 ```
 
 >![alt text](image-110.png)
+
+---
+---
+
+# !! Overloading Stream Insertion(<</output) / Stream Extraction(>>/input) Operators
+
+## Problem Statement #0.1
+
+### Overloading Stream operators using example of Matrix class
+
+```C++
+//solution
+//Example of class Matrix of 2 dimensional array of 3X3
+#include <iostream>
+using namespace std;
+
+#define MIN_R 3
+#define MIN_C 3
+
+class Matrix{
+	friend ostream& operator<<(ostream& output,const Matrix& m);
+	friend istream& operator>>(istream& input, Matrix& m);
+	
+	private:
+		int rows, cols;
+		int elements[MIN_R][MIN_C];
+		
+	public:
+		Matrix(int rowNum, int colNum);
+
+		//setter functions to set values
+		void setRow(const int& rowNum){
+			rows = rowNum;
+		};
+		void setCol(const int& colNum){
+			cols = colNum;
+		}
+};
+
+ostream& operator<<(ostream& output,const Matrix& m){
+	output << "\n" <<endl;
+	for(int i=0; i<m.rows; i++){
+		output << '|';
+		output.width(10);
+		for(int j=0; j<m.cols; j++){
+			output.width(3);
+			output << m.elements[i][j];
+		}
+		output.width(3);
+		output << '|' <<endl;
+	}
+	
+	return output;
+}
+
+istream& operator>>(istream& input, Matrix& m){
+	cout << "Please enter the values of the matrix." <<endl;
+	for(int i=0; i<m.rows; i++){
+		for(int j=0; j<m.cols; j++){
+			cout << "Please enter the value for R" << i << " , C" << j << ":";
+			input >> m.elements[i][j];
+		}
+	}
+	return input;
+}
+
+Matrix::Matrix(int rowNum = MIN_R, int colNum = MIN_C){
+	setRow(rowNum);
+	setCol(colNum);
+	
+	for(int i=0; i<rows; i++){
+		for(int j=0; j<cols; j++){
+			elements[i][j] = 0;
+		}
+	}
+}
+
+int main(){
+	
+	Matrix m1;
+	
+	cin >> m1;
+	cout << m1;
+	
+	return 0;
+}
+```
+
+>![alt text](image-112.png)
 
 
 
