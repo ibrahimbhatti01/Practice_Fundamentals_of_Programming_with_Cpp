@@ -7758,6 +7758,185 @@ int main(){
 
 >![alt text](image-116.png)
 
+---
+---
+
+# !! Copy Constructor
+
+## Problem Statement #0.1
+
+### Example of a Matrix class implemented by a 1D dynamically allocated array
+
+```C++
+//solution
+/*In this example we're gonna make Matrix class in which user can define the dimensions on runtime
+using dynamic memory allocation concept inside class. So, As we're using dynamic memory allocation
+inside class in data members _We need to keep few things in concideration:
+1. Assignment operator must be overloaded for this class, Because ordinary assignment will copy
+memeber data and in case of deletion of first object the memory of the member pointer will be freed
+but still the next object's(in which the previous object was copied) data member will point to that
+particular location _Which will cause subtle errors.
+2. For this reason we use COPY CONSTRUCTOR to create a new object copy of the previous. to perform
+Deep copy instead of shallow one.
+3. In this scenario we always need to write destructor to successfully free the memory*/
+
+#include <iostream>
+using namespace std;
+
+class Matrix{
+	friend ostream& operator<<(ostream &output,const Matrix &temp);
+	friend istream& operator>>(istream &input, Matrix &temp);
+
+	private:
+		int *m;
+		int rows, cols;
+
+	public:
+		Matrix(int rowsN, int colsN);
+		Matrix(const Matrix &);
+		~Matrix();
+
+		void setRows(int rowsN){
+			rows = rowsN;
+		};
+		void setCols(int colsN){
+			cols = colsN;
+		}
+
+		int getRows() const {
+			return rows;
+		}
+		int getCols() const {
+			return cols;
+		}
+
+		Matrix& operator=(const Matrix &temp);
+};
+
+//Constructor will receive dimensions of Matrix and dynamically allocate required memory
+Matrix::Matrix(int rowsN, int colsN){
+	setRows(rowsN);
+	setCols(colsN);
+
+	//Allocating the memory dynamically
+	m = new int[rows * cols];
+
+	//initialize all the instances to 0
+	for(int i=0; i<(rows*cols); i++){
+		m[i] = 0;
+	}
+}
+
+Matrix::Matrix(const Matrix &temp){
+	setRows(temp.rows);
+	setCols(temp.cols);
+
+	m = new int[rows * cols];
+
+	for(int i=0; i<rows*cols; i++){
+		m[i] = temp.m[i];
+	}
+}
+
+ostream& operator<<(ostream &output, const Matrix &temp){
+	output << "\n" <<endl;
+	for(int i=0; i<temp.rows; i++){
+		output << '|';
+		output.width(10);
+		for(int j=0; j<temp.cols; j++){
+			output.width(3);
+			output << temp.m[i*temp.cols+j];
+		}
+		output.width(3);
+		output << '|' <<endl;
+	}
+	output<<endl;
+
+	return output;//for cascading
+}
+
+istream& operator>>(istream &input, Matrix &temp){
+	cout << "Please enter the values of the matrix." <<endl;
+	for(int i=0; i<temp.rows; i++){
+		for(int j=0; j<temp.cols; j++){
+			cout << "Please enter the value for R" << i << " , C" << j << ":";
+			//How to iterate on 1D in 2D manner m[currentRow * totalColumns + currentColumn]
+			input >> temp.m[i*temp.cols+j];
+		}
+	}
+
+	return input;//for cascading(chaining)
+}
+
+Matrix& Matrix::operator=(const Matrix& temp){
+	//Checking self assignment case by comparing addresses
+	if(this != &temp){
+		//Assignment is only allowed incase of, if the order of both matrices is same
+		if(rows == temp.rows && cols == temp.cols){
+			for(int i=0; i<rows*cols; i++){
+				m[i] = temp.m[i];
+			}
+		}else{
+			cerr << "\n[ERROR]: Order Of The Matrices didn't Match.'\n" <<endl;
+		}
+	}else{
+		cerr << "\n[ERROR]: Self Assignment Is Not Allowed.\n" <<endl;
+	}
+
+	return *this;
+}
+
+Matrix::~Matrix(){
+	delete[] m;
+}
+
+int main(){
+
+	Matrix m1(2,3);
+	cout << m1;
+
+	Matrix m2 = m1;//Copy constructor will be called here, not assignment operator
+	cout << m2;
+
+	cin >> m1;
+	cout << m1;
+
+	m2 = m1;
+	cout << m2;
+
+	return 0;
+}
+```
+
+>
+
+## Problem Statement #0
+
+###
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class String{
+	private:
+		char *c;
+		
+	public:
+		void copy(char *s);
+		String(char *data);
+		void print();
+};
+
+int main(){
+	
+	
+	return 0;
+}
+```
+
+>
 
 
 
