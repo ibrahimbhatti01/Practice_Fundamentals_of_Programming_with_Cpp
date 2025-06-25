@@ -7910,27 +7910,392 @@ int main(){
 
 >
 
-## Problem Statement #0
+---
+---
 
-###
+# !! Classes and Objects Advanced concepts
+
+## Problem Statement #0.1
+
+### Use of an object of a class inside a class and the order of calls for constructors and destructors
 
 ```C++
 //solution
 #include <iostream>
 using namespace std;
 
-class String{
+class Column{
 	private:
-		char *c;
+		int size;
 		
 	public:
-		void copy(char *s);
-		String(char *data);
-		void print();
+		Column(int size = 0){
+			setSize(size);
+			cout << "Column created." <<endl;
+		};
+		void display(){
+			cout << "Columns size is: " << size <<endl;
+		};
+		void setSize(int sizeC){
+			size = sizeC;
+		};
+		~Column(){
+			cout << "Column Destroyed." <<endl;
+		}
+};
+
+class Row{
+	private:
+		int size;
+		Column col;//as there're so many columns in a row
+		
+	public:
+		Row(){
+			cout << "Row created." << endl;
+		};
+		void setSize(int sizeR){
+			size = sizeR;
+		}
+		void display(){
+			cout << "Rows size is: " <<size <<endl;
+		}
+		~Row(){
+			cout << "Row Destroyed." <<endl;
+		}
+};
+
+class Matrix{
+	private:
+		Row row;
+		
+	public:
+		Matrix(){
+			cout << "MATRIX created\n" <<endl;
+		};
+		~Matrix(){
+			cout << "Matrix Destroyed." <<endl;
+		}
+		
 };
 
 int main(){
+
+	Matrix m;
+
+	return 0;
+}
+```
+
+>![alt text](image-117.png)
+
+---
+---
+
+# !! Template Functions
+
+## Problem Statement #0.1
+
+### template function with one generic argument
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+template<class T>
+T reverse(T x){
+	return (-x);
+}
+
+int main(){
+	int i = 10;
+	double d = 15.57;
+	float f = 2.43;
 	
+	cout << "reverse of int i = " << reverse(i) <<endl;
+	cout << "reverse of double d = " << reverse(d) <<endl;
+	cout << "reverse of float f = " << reverse(f) <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-118.png)
+
+## Problem Statement #0.2
+
+### template function with 2/multiple generic arguments
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+template<class T>
+void swapIt(T &x, T &y){
+	T temp;
+	temp = x;
+	x = y;
+	y = temp;
+}
+
+int main(){
+	int i=4, j=8;
+	double d=7.77, k=9.89;
+	char c='A', a='C';
+	
+	cout << "Before swap operation" <<endl;
+	cout << "i= " <<i << ", j= " <<j <<endl;
+	cout << "d= " <<d << ", k= " <<k <<endl;
+	cout << "c= " <<c <<", a= " <<a << "\n" <<endl;
+	
+	swapIt(i, j);
+	swapIt(d, k);
+	swapIt(c, a);
+	
+	cout << "After swap operation" <<endl;
+	cout << "i= " <<i << ", j= " <<j <<endl;
+	cout << "d= " <<d << ", k= " <<k <<endl;
+	cout << "c= " <<c <<", a= " <<a <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-119.png)
+
+## Problem Statement #0.3
+
+### template functions with 2/multiple generic data types/ Forcing return type
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+//this template will return int type data
+template<class A, class B>
+A multiply(A x, B y){
+	return x*y;
+}
+
+int main(){
+	int i=8;
+	double d=8.88;
+	
+	//We can forcefully get double type data or any other type of data.
+	//In this way, we'll use <dataType> before parentheses
+	cout << "As char " << i << "*" << d << " = " << multiply<char>(i, d) <<endl;
+	cout << "As integer " << i << "*" << d << " = " << multiply<int>(i, d) <<endl;
+	cout << "As double " << i << "*" << d << " = " << multiply<double>(i, d) <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-120.png)
+
+## Problem Statement #0.3.1
+
+### Forcing return type
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+template<class T, class U>
+T reverse(U x){
+	return (-x);
+}
+
+int main(){
+	
+ 	double i = 7.77;
+	
+	cout <<"\n"
+		 << reverse<int>(i) << "\n"
+		 << reverse<int,double>(i) << "\n"
+		 << reverse<double,double>(i) << "\n"
+		 << reverse<double,int>(i) << "\n"
+		 << reverse<double>(i) <<endl;
+//	cout << reverse(i);//error, return type is not defined
+	
+	return 0;
+}
+```
+
+>![alt text](image-122.png)
+
+## Problem Statement #0.4
+
+### Overloading template functions
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+template<class T>
+void inverse(T &x, T &y){
+	T temp;
+	temp = x;
+	x = y;
+	y = temp;
+}
+
+//Note: overloaded functions cannot be differ basis on their returnType.
+
+template<class T>
+T inverse(T x){
+	return (-x);
+}
+
+int main(){
+	
+	int i=9, j=10;
+	
+	cout << "Before swap i=" << i << ", j=" << j << "\n" <<endl;
+	inverse(i, j);//use of inverse for swaping
+	cout << "After swap i=" << i << ", j=" << j << "\n" <<endl;
+	
+	cout << "Before inverse i=" << i << "\n" <<endl;
+	i = inverse(i);//use of inverse for negating
+	cout << "After inverse i=" << i << "\n" <<endl;
+	
+	return 0;
+}
+```
+
+>![alt text](image-121.png)
+
+## Problem Statement #0.5
+
+### using template functions with classes
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+class PhoneCall{
+	private:
+		int lengthOfCall;
+		char billCode;
+		
+	public:
+		PhoneCall(const int i, char b);
+		PhoneCall(const PhoneCall &p);
+		PhoneCall operator-();
+		void display();
+};
+
+//Constructor
+PhoneCall::PhoneCall(const int i, char b) : lengthOfCall(i), billCode(b){};
+
+//Copy Constructor
+PhoneCall::PhoneCall(const PhoneCall &p): lengthOfCall(p.lengthOfCall), billCode(p.billCode){};
+
+PhoneCall PhoneCall::operator-(){
+		  PhoneCall temp(*this);
+		  temp.billCode = 'c';
+		  return temp;
+};
+
+void PhoneCall::display(){
+	cout << "Length of call: " << lengthOfCall << "\n"
+		 << "Bill Code: " << billCode <<endl;
+}
+
+template<class T>
+T reverse(T x){
+	return (-x);
+}
+
+int main(){
+	PhoneCall a(10, 's');
+	a.display();
+	
+	a = reverse(a);
+	a.display();
+	
+	return 0;
+}
+```
+
+>![alt text](image-123.png)
+
+---
+---
+
+# !! Template Classes
+
+## Problem Statement #0.1
+
+### simple Template class and it's implementation
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+template<class T>
+class Number{
+	private:
+		T myNumber;
+		
+	public:
+		Number(T n);
+		void display();
+};
+
+template<class T>
+Number<T>::Number(T n):myNumber(n){};
+
+template<class T>
+void Number<T>::display(){
+	cout << myNumber <<endl;
+}
+
+int main(){
+	
+	Number<int>n(9);
+	
+	n.display();
+	
+	return 0;
+}
+```
+
+>![alt text](image-124.png)
+
+## Problem Statement #0.2
+
+### template Stack class -contd.
+
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+template<class T>
+class Stack{
+	private:
+		int size;
+		T array[];
+		
+	public:
+		Stack();
+		void push(T);
+		T pop();
+		bool isEmpty();
+		bool isFull();
+};
+
+
+int main(){
+	Stack <int> x;//create a stack of type int
+	Stack <double> d;
 	
 	return 0;
 }
@@ -7938,8 +8303,74 @@ int main(){
 
 >
 
+## Problem Statement #0.3
 
+### Example illustrating on Extending dataTypes using templates classe
 
+```C++
+//solution
+#include <iostream>
+using namespace std;
+
+//user-defined data type template
+template<class T>
+class Generic{
+	private:
+	    T instance;
+	public:
+	    Generic(T i);
+	    void print(void);
+};
+
+// Generic constructor
+template<class T>
+Generic<T>::Generic(T i = 0){
+    instance = i;
+}
+
+template<class T>
+void Generic<T>::print(void){
+    cout << "Generic printing: " << endl;
+    cout << instance << endl;
+}
+
+class Employee{
+	private:
+	    int idNum;
+	    double salary;
+	public:
+	    Employee(int id);
+	    friend ostream& operator<<(ostream& out, const Employee &e);
+};
+
+Employee::Employee(int id = 0){
+    idNum = id;
+    salary = 4.9;
+}
+
+ostream& operator<<(ostream &out, const Employee &emp){
+    out << "Employee number " << emp.idNum;
+    out << " Salary " << emp.salary;
+    return out;
+}
+
+int main(){
+    Generic<int> anInt(7);
+    Generic<double> someMoney(6.65);
+    Generic<Employee> aWorker(333);
+
+    anInt.print();
+    someMoney.print();
+    aWorker.print();
+
+    return 0;
+}
+```
+
+>![alt text](image-125.png)
+
+---
+---
 
 
 ## Problem Statement #0
