@@ -8372,6 +8372,418 @@ int main(){
 ---
 ---
 
+# !! Final Project
+
+## Problem Statement #01
+
+### Implementing matrix class -cont..
+
+```C++
+//solution
+#include <iostream>
+#include <iomanip>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>//for using vectors
+using namespace std;
+
+class Matrix{
+	private:
+		int rows, cols;//fixed certain whole numbers
+		double **elements;//elements is pointing to an array of pointers
+	public:
+		Matrix(int=0, int=0);
+		~Matrix();
+		Matrix(const Matrix &);
+		
+		//Assignment operator
+		const Matrix& operator=(const Matrix &);
+		
+		//utility functions
+		int getRows()const;
+		int getCols()const;
+		
+		vector<double> getNthRow(int);
+		vector<double> getNthCol(int);
+		
+		// I\O functions
+		const Matrix& input(istream &is=cin);
+		const Matrix& input(ifstream &is);
+		
+		void output(ostream &os=cout)const;
+		void output(ofstream &os)const;
+		
+		//Plus operator
+		Matrix operator+(Matrix &)const;//A+B
+		Matrix operator+(double d)const;//A+d
+		friend Matrix operator+(double d, Matrix &);//d+A
+		const Matrix& operator+=(Matrix &);//A+=B
+		const Matrix& operator+=(double d);//A+=d
+		
+		//- Operator
+		Matrix operator-(Matrix &)const;//A-B
+		Matrix operator-(double d)const;//A-d
+		friend Matrix operator-(double d, Matrix &);//d-A
+		const Matrix& operator-=(Matrix &);//A+=B
+		const Matrix& operator-=(double d);//A+-=d
+		
+		//* Operator
+		Matrix operator*(const Matrix &);//A*B
+		Matrix operator*(double d)const;//A*d
+		friend Matrix operator*(const double d, const Matrix &);//d*A
+		const Matrix& operator*=(Matrix &);//A*=B
+		const Matrix& operator*=(double d);//A*=d
+		
+		//Divide '/' Operator
+		Matrix operator/(const double d);
+
+		//stream extraction >>
+		friend istream& operator>>(istream&, Matrix &);
+		friend ifstream& operator>>(ifstream&, Matrix &);
+		
+		//stream insertion <<
+		friend ostream& operator<<(ostream&, Matrix &);
+		friend ofstream& operator<<(ofstream&, Matrix &);
+		
+		//Transpose
+		const Matrix& transpose(void);
+};
+
+Matrix::Matrix(int rows, int cols) : rows(rows), cols(cols){
+	//allocate an array of pointers, each pointer representing a row, combined rows then bring columns
+	elements = new double*[rows];//elements = [ptr1, ptr2 ..]
+
+	//Now allocate memory(equal to number of columns) for each particular pointer
+	for(int i=0; i<rows; i++){
+		elements[i] = new double[cols];
+		//initialize each element of the row immediately with 0
+		for(int j=0; j<cols; j++){
+			elements[i][j] = 0;
+		}
+	}
+};
+
+//Copy Constructor
+//Called in case of 'Matrix A(B) or Matrix A = B'.
+Matrix::Matrix(const Matrix &m):rows(m.rows), cols(m.cols){
+	elements = new double*[rows];
+	
+	for(int i=0; i<rows; i++){
+		elements[i] = new double[cols];
+		for(int j=0; j<cols; j++){
+			elements[i][j] = m.elements[i][j];
+		}
+	}
+};
+
+//Destructor
+Matrix::~Matrix(){
+	//1. Free each row's column array
+	for(int i=0; i<rows; i++){
+		delete[] elements[i];
+	}
+	
+	//2. Free array of pointers
+	delete[] elements;
+};
+
+//Utility Functions
+int Matrix::getRows()const{
+	return rows;
+};
+int Matrix::getCols()const{
+	return cols;
+};
+
+//input/output functions
+void Matrix::output(ostream &os)const{
+// Save original formatting
+//    ios::fmtflags old_flags = os.flags();
+//    streamsize old_precision = os.precision();
+
+    // Determine maximum width needed for any element (+1 for padding)
+    int max_width = 0;
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < cols; j++) {
+            ostringstream oss;
+            oss << fixed << setprecision(2) << elements[i][j];
+            max_width = max(max_width, (int)oss.str().length());
+        }
+    }
+    max_width += 1; // Add padding on both sides
+
+    // Print each row with borders
+    for(int i = 0; i < rows; i++) {
+        os << "| ";  // Left border
+        for(int j = 0; j < cols; j++) {
+            os << setw(max_width) << fixed << setprecision(2) << elements[i][j];
+            if(j < cols-1) os << " "; // Space between columns
+        }
+        os << "  |" << endl;  // Right border
+    }
+
+//    // Restore original formatting
+//    os.flags(old_flags);
+//    os.precision(old_precision);
+}
+void Matrix::output(ofstream &os)const{
+	 os.setf(ios::showpoint);
+	 os.setf(ios::fixed, ios::floatfield);
+	 os<<rows<<" "<<cols<<"\n";
+	 for(int i=0; i<rows; i++){
+	 	for(int j=0; j<cols; j++){
+	 		os<<setw(6)<<setprecision(2)<<elements[i][j]<<"\n";
+		 }
+	 }
+}
+
+const Matrix& Matrix::input(istream &is){
+	cout<<"Input Matrix Size: " << rows << " rows by " << cols << " columns\n";
+	for(int i=0; i<rows; i++){
+		cout << "Please enter " << cols << " values separated by spaces for row no. " << i+1 <<": ";
+		for(int j=0; j<cols; j++){
+				is>>elements[i][j];
+		}
+	}
+	return *this;
+	
+}
+const Matrix& Matrix::input(ifstream &is){
+	int newRows, newCols;
+	is >> newRows;
+	is >> newCols;
+	if(newRows > 0 && newCols > 0){
+		Matrix temp(newRows, newCols);
+		*this = temp;
+		
+		// Read data directly into *this
+		for(int i=0; i<this->rows; i++){
+			for(int j=0; j<this->cols; j++){
+				is >> elements[i][j];
+			}
+		}
+	}
+	return *this;
+}
+
+//Transpose function
+const Matrix& Matrix::transpose(){
+	if(rows == cols){
+		double temp;
+		for(int i=0; i<rows; i++){
+			for(int j=i+1; j<cols; j++){
+				temp = elements[i][j];
+				elements[i][j] = elements[j][i];
+				elements[j][i] = temp;
+			}
+		}
+	}else{
+	   Matrix temp(cols, rows);
+	   for(int i=0; i<rows; i++){
+	   	for(int j=0; j<cols; j++){
+	   		temp.elements[j][i] = elements[i][j];
+		   }
+	   }
+	   *this = temp;
+	}
+	return *this;
+}
+
+//Stream insertion(<<)/extraction(>>)
+istream& operator>>(istream& is, Matrix &m){
+	m.input(is);
+	return is;
+}
+ifstream& operator>>(ifstream& is, Matrix &m){
+	m.input(is);
+	return is;
+}
+
+ostream& operator<<(ostream& os, Matrix &m){
+	m.output(os);
+	 return os;
+}
+ofstream& operator<<(ofstream& os, Matrix &m){
+	m.output(os);
+	return os;
+}
+
+//plus operator
+Matrix Matrix::operator+(Matrix &m)const{
+	Matrix temp(*this);
+	   if(rows == m.rows && cols == m.cols){
+	   	for(int i=0; i<rows; i++){
+	   		for(int j=0; j<cols; j++){
+				temp.elements[i][j]+=m.elements[i][j];
+			}
+		}
+		return temp;
+	   }
+	return temp;
+}
+Matrix Matrix::operator+(double d)const{
+	   Matrix temp(*this);
+	   for(int i=0; i<rows; i++){
+	   	for(int j=0; j<cols; j++){
+			temp.elements[i][j] += d;
+		   }
+	   }
+	   return temp;
+}
+Matrix operator+(double d, Matrix &m){
+	Matrix temp(m);
+	for(int i=0; i<m.rows; i++){
+	   	for(int j=0; j<m.cols; j++){
+			temp.elements[i][j] += d;
+		}
+   }
+	return temp;
+}
+const Matrix& Matrix::operator+=(Matrix &m){
+	*this = *this + m;
+	return *this;
+}
+const Matrix& Matrix::operator+=(double d){
+	*this = *this + d;
+	return *this;
+}
+
+//Minus operator
+Matrix Matrix::operator-(Matrix &m)const{
+	Matrix temp(*this);
+	   if(rows == m.rows && cols == m.cols){
+	   	for(int i=0; i<rows; i++){
+		   	for(int j=0; j<cols; j++){
+				temp.elements[i][j] -= m.elements[i][j];
+			   }
+		   }
+		 return temp;
+	   }
+	 return temp;
+}
+Matrix Matrix::operator-(double d)const{
+	Matrix temp(*this);
+	for(int i=0; i<rows; i++){
+		for(int j=0; j<cols; j++){
+			temp.elements[i][j] -= d;
+		}
+	}
+	return temp;
+}
+Matrix operator-(double d, Matrix &m){
+	Matrix temp(m);
+	for(int i=0; i<m.rows; i++){
+		for(int j=0; j<m.cols; j++){
+			temp.elements[i][j] = d - temp.elements[i][j];
+		}
+	}
+	return temp;
+}
+const Matrix& Matrix::operator-=(Matrix &m){
+	*this = *this - m;
+	return *this;
+}
+const Matrix& Matrix::operator-=(double d){
+	*this = d - *this;
+	return *this;
+}
+
+//Multiply operator
+Matrix Matrix::operator*(const Matrix &m){
+	Matrix temp(rows, m.cols);
+	if(cols == m.rows){
+		for(int i=0; i<rows; i++){
+			for(int j=0; j<m.cols; j++){
+				for(int k=0; k<cols; k++){
+					temp.elements[i][j] += elements[i][k] * elements[k][j];//important
+				}
+			}
+		}
+	}
+}
+Matrix Matrix::operator*(double d)const{
+	Matrix temp(*this);
+	for(int i=0; i<rows; i++){
+		for(int j=0; j<cols; j++){
+			temp.elements[i][j] *= d;
+		}
+	}
+	return temp;
+};
+Matrix operator*(const double d, const Matrix &m){
+	Matrix temp(m);
+	for(int i=0; i<m.rows; i++){
+		for(int j=0; j<m.cols; j++){
+			temp.elements[i][j] *= d;
+		}
+	}
+	return temp;
+};
+const Matrix& Matrix::operator*=(Matrix &m){
+	*this = *this * m;
+	return *this;
+};
+//const Matrix& Matrix::operator*=(double d){
+//	*this = *this * static_cast<double>(d);
+//	return *this;
+//};
+
+//Divide operator
+Matrix Matrix::operator/(const double d){
+	Matrix temp(*this);
+	if(d != 0){
+		  for(int i=0; i<rows; i++){
+		  	for(int j=0; j<cols; j++){
+		  		temp.elements[i][j] / d;
+			  }
+		  }
+	}
+	return temp;
+};
+
+//Assignment operator
+const Matrix& Matrix::operator=(const Matrix&m){
+	//self-assignment check
+	if(&m != this){//comapring addresses
+		  if(rows != m.rows || cols != m.cols){
+			for(int i=0; i<rows; i++){
+				delete[] elements[i];
+			}
+			delete[] elements;
+			
+			rows = m.rows;
+			cols = m.cols;
+			
+			elements = new double*[rows];
+			for(int i=0; i<rows; i++){
+				elements[i] = new double[cols];
+			}
+		  }
+		  for(int i=0; i<rows; i++){
+		  	for(int j=0; j<cols; j++){
+		  		elements[i][j] = m.elements[i][j];
+			  }
+		  }
+	}
+	return *this;
+}
+
+int main(){
+	Matrix temp(5,5);
+	
+	temp.input();
+	
+	temp.output();
+	
+	return 0;
+}
+```
+
+>
+
+---
+---
 
 ## Problem Statement #0
 
